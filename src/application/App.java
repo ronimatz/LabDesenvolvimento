@@ -14,6 +14,7 @@ public class App {
         // Criação dos objetos iniciais
         Curso c1 = new Curso("Engenharia de Software", 80);
         Aluno a1 = new Aluno("João", "q8o5w@example.com", "1234");
+        Aluno a2 = new Aluno("Caio", "caiow@example.com", "1234");
 
         Secretaria sec1 = new Secretaria("Secretaria", "sec@gmail.com", "123");
         sec1.addCurso(c1);
@@ -30,10 +31,12 @@ public class App {
 
         // Obtém ou cria a matrícula do aluno para o semestre
         Matricula m1 = a1.getMatriculaDoSemestre(s1);
+        Matricula m2 = a2.getMatriculaDoSemestre(s1);
         
         // Registra o sistema de cobrança como observador da matrícula
         Cobranca cobranca = new Cobranca();
         m1.addMatriculaListener(cobranca);
+        m2.addMatriculaListener(cobranca);
         
         // Exibe o histórico (antes de novas matrículas)
         a1.getHistoricoMatriculas();
@@ -62,6 +65,10 @@ public class App {
         m1.cancelarMatricula(c1.getDisciplinas().get(3));
         System.out.println("Disciplinas atuais do aluno: " + m1.getDisciplinas());
 
+        m2.matricularEmDisciplina(c1.getDisciplinas().get(5));
+
+        s1.fecharPeriodoMatricula(c1,s1);
+        m2.matricularEmDisciplina(c1.getDisciplinas().get(2));
         // Gera o currículo na secretaria
         sec1.gerarCurriculo();
     }

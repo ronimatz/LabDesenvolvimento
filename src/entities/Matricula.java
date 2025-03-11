@@ -33,6 +33,10 @@ public class Matricula {
         }
     }
 
+    public void notificarCobranca() {
+        notifyListeners();
+    }
+
     public Aluno getAluno() {
         return aluno;
     }
@@ -52,6 +56,7 @@ public class Matricula {
     public Integer getNumOptativas() {
         return this.numOptativas;
     }
+
 
     private void adicionarDisciplina(Disciplina disciplina) {
         disciplinas.add(disciplina);
@@ -98,8 +103,7 @@ public class Matricula {
         adicionarDisciplina(disciplina);
         System.out.println("Matriculado com sucesso em " + disciplina.getNome());
         
-        // Após a matrícula, notifica os observadores (ex: sistema de cobrança)
-        notifyListeners();
+
     }
 
     public void cancelarMatricula(Disciplina disciplina) {
@@ -117,6 +121,5 @@ public class Matricula {
         removerDisciplina(disciplina);
         System.out.println("Matrícula cancelada da disciplina " + disciplina.getNome());
         
-        notifyListeners();
     }
 }
