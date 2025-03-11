@@ -1,4 +1,5 @@
 package entities;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -6,9 +7,11 @@ public class Matricula {
     private Aluno aluno;
     private Semestre semestre;
     private List<Disciplina> disciplinas;
-
     private Integer numObrigatorias;
     private Integer numOptativas;
+    
+    // Lista de observadores para notificação
+    private List<MatriculaListener> listeners = new ArrayList<>();
 
     public Matricula(Aluno aluno, Semestre semestre) {
         this.aluno = aluno;
@@ -16,6 +19,18 @@ public class Matricula {
         this.disciplinas = new ArrayList<>();
         this.numObrigatorias = 0;
         this.numOptativas = 0;
+    }
+
+    // Método para registrar um listener
+    public void addMatriculaListener(MatriculaListener listener) {
+        listeners.add(listener);
+    }
+
+    // Notifica todos os listeners cadastrados
+    private void notifyListeners() {
+        for (MatriculaListener listener : listeners) {
+            listener.onMatriculaUpdated(this);
+        }
     }
 
     public Aluno getAluno() {
@@ -30,39 +45,19 @@ public class Matricula {
         return disciplinas;
     }
 
-    public void setAluno(Aluno aluno) {
-        this.aluno = aluno;
-    }
-    public void setSemestre(Semestre semestre) {
-        this.semestre = semestre;
-    }
-    public void setDisciplinas(List<Disciplina> disciplinas) {
-        this.disciplinas = disciplinas;
-    }
-
     public Integer getNumObrigatorias() {
         return this.numObrigatorias;
-    }
-
-    public void setNumObrigatorias(Integer numObrigatorias) {
-        this.numObrigatorias = numObrigatorias;
     }
 
     public Integer getNumOptativas() {
         return this.numOptativas;
     }
 
-    public void setNumOptativas(Integer numOptativas) {
-        this.numOptativas = numOptativas;
-    }
-
-
     private void adicionarDisciplina(Disciplina disciplina) {
         disciplinas.add(disciplina);
         if (disciplina.isObrigatoria()) {
             numObrigatorias++;
-        }
-        else{
+        } else {
             numOptativas++;
         }
     }
@@ -102,6 +97,9 @@ public class Matricula {
         disciplina.addAluno(aluno);
         adicionarDisciplina(disciplina);
         System.out.println("Matriculado com sucesso em " + disciplina.getNome());
+        
+        // Após a matrícula, notifica os observadores (ex: sistema de cobrança)
+        notifyListeners();
     }
 
     public void cancelarMatricula(Disciplina disciplina) {
@@ -118,5 +116,7 @@ public class Matricula {
         disciplina.removeAluno(aluno);
         removerDisciplina(disciplina);
         System.out.println("Matrícula cancelada da disciplina " + disciplina.getNome());
+        
+        notifyListeners();
     }
 }
