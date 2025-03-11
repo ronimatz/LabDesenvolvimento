@@ -67,7 +67,7 @@ public class Matricula {
         }
     }
 
-    public void removerDisciplina(Disciplina disciplina) {
+    private void removerDisciplina(Disciplina disciplina) {
         disciplinas.remove(disciplina);
         if (disciplina.isObrigatoria()) {
             numObrigatorias--;  

@@ -16,13 +16,15 @@ public class Semestre {
         return periodoMatriculaAberto;
     }
 
-    public void abrirPeriodoMatricula() {
-        this.periodoMatriculaAberto = true;
+    public boolean abrirPeriodoMatricula() {
+        return this.periodoMatriculaAberto = true;
     }
 
-    public void fecharPeriodoMatricula(Curso curso) {
+    public boolean fecharPeriodoMatricula(Curso curso) {
         this.periodoMatriculaAberto = false;
         curso.verificarTodasDisciplinas();
+
+        return periodoMatriculaAberto;
     }
 
 
