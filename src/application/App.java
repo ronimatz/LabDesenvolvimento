@@ -1,8 +1,8 @@
 package application;
 
 import entities.Aluno;
-import entities.Curso;
 import entities.Cobranca;
+import entities.Curso;
 import entities.Disciplina;
 import entities.Matricula;
 import entities.Professor;
@@ -14,7 +14,6 @@ public class App {
         // Criação dos objetos iniciais
         Curso c1 = new Curso("Engenharia de Software", 80);
         Aluno a1 = new Aluno("João", "q8o5w@example.com", "1234");
-
         Secretaria sec1 = new Secretaria("Secretaria", "sec@gmail.com", "123");
         sec1.addCurso(c1);
         Professor p1 = new Professor("Joaquim", "q8o5w@example.com", "1234");
