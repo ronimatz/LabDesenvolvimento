@@ -24,6 +24,8 @@ public class Disciplina {
         this.ativa = ativa;
         this.professor = professor;
         this.curso = curso;
+
+        professor.addDisciplina(this);
     }
 
 

@@ -21,6 +21,8 @@ public class App {
         c1.addDisciplina(new Disciplina(c1, "BD2", true, true, p1));
         c1.addDisciplina(new Disciplina(c1, "BD3", false, true, p1));
 
+      
+
         Semestre s1 = new Semestre("2025.1");
 
         // Obtém ou cria a matrícula do aluno para o semestre
