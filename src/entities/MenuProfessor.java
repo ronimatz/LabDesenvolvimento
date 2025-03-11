@@ -1,6 +1,4 @@
-import entities.Aluno;
-import entities.Disciplina;
-import entities.Professor;
+package entities;
 import java.util.Scanner;
 
 public class MenuProfessor {

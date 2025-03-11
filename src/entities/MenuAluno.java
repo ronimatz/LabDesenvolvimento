@@ -1,8 +1,4 @@
-import entities.Aluno;
-import entities.Curso;
-import entities.Disciplina;
-import entities.Matricula;
-import entities.Semestre;
+package entities;
 import java.util.Scanner;
 
 public class MenuAluno {

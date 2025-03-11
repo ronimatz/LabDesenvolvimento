@@ -1,6 +1,4 @@
-import entities.Curso;
-import entities.Disciplina;
-import entities.Secretaria;
+package entities;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
