@@ -18,8 +18,8 @@ Repositório do Grupoo de Laboratório de desenvolvimento
 
 * Como professor, quero acessar o sistema e visualizar a lista de alunos matriculados em minhas disciplinas, para que eu possa acompanhar quais estudantes participarão das minhas aulas.
 
-* Como agente de matrícula, quero cadastrar e configurar os cursos e disciplinas do semestre, para que os alunos possam realizar suas matrículas corretamente e eu realize o controle das matérias ofertadas.
-
+* Como Secretaria, quero poder gerar um arquivo persistente com a informação dos cursos, para poder planejar mais facilmente a grade de horários.
+  
 * Como agente financeiro, quero receber informações sobre as disciplinas matriculadas por cada aluno, para que eu possa gerar as cobranças corretamente.
 
 
