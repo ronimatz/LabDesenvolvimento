@@ -26,7 +26,7 @@ public class Semestre {
 
 
 
-        public boolean fecharPeriodoMatricula(Curso curso, Semestre semestreAtual) {
+    public boolean fecharPeriodoMatricula(Curso curso, Semestre semestreAtual) {
     this.periodoMatriculaAberto = false;
     curso.verificarTodasDisciplinas();
 
