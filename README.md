@@ -10,4 +10,6 @@ Repositório do Grupo de Laboratório de desenvolvimento
 
 -Caio Victor Kodato
 
+-Sidney Soares
+
 
