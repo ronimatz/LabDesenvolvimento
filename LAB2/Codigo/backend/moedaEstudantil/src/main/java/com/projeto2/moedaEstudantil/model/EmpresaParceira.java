@@ -26,4 +26,11 @@ public class EmpresaParceira extends Usuario {
 
     @Column(unique = true, nullable = false)
     private String cnpj;
+
+    public EmpresaParceira(String email, String senha, String nome, String cnpj) {
+        super(email, senha);
+        this.nome = nome;
+        this.cnpj = cnpj;
+        this.vantagens = new ArrayList<>();
+    }
 }
