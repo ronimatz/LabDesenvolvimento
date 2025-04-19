@@ -3,6 +3,7 @@ package com.projeto2.moedaEstudantil.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.projeto2.moedaEstudantil.model.Departamento;
 import com.projeto2.moedaEstudantil.model.InstituicaoEnsino;
 import com.projeto2.moedaEstudantil.model.Professor;
 import com.projeto2.moedaEstudantil.repositories.InstituicaoEnsinoRepository;
@@ -29,6 +30,16 @@ public class InstituicaoEnsinoService {
 
         
         instituicao.adicionarProfessor(professor);
+
+        repository.save(instituicao); 
+    }
+
+    public void addDepartamento(Integer instuicaoId, Departamento departamento) {
+        InstituicaoEnsino instituicao = repository.findById(instuicaoId)
+            .orElseThrow(() -> new RuntimeException("Instituição não encontrada"));
+
+        
+        instituicao.adicionarDepartamento(departamento);
 
         repository.save(instituicao); 
     }

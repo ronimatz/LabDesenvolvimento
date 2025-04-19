@@ -3,6 +3,9 @@ package com.projeto2.moedaEstudantil.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,6 +43,12 @@ public class Departamento {
 
     @ManyToOne
     @JoinColumn(name = "instituicao_id")
+    @JsonBackReference
     private InstituicaoEnsino instituicaoEnsino;
+
+    public Departamento(String nome, InstituicaoEnsino instituicaoEnsino) {
+        this.nome = nome;
+        this.instituicaoEnsino = instituicaoEnsino;
+    }
 }
 

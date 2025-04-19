@@ -1,21 +1,21 @@
 package com.projeto2.moedaEstudantil.controller;
 
-import java.util.Optional;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.projeto2.moedaEstudantil.model.Departamento;
+
 import com.projeto2.moedaEstudantil.model.InstituicaoEnsino;
-import com.projeto2.moedaEstudantil.model.Professor;
-import com.projeto2.moedaEstudantil.repositories.DepartamentoRepository;
-import com.projeto2.moedaEstudantil.repositories.ProfessorRepository;
+
+
 import com.projeto2.moedaEstudantil.services.InstituicaoEnsinoService;
 
 @RestController
@@ -25,11 +25,6 @@ public class InstituicaoEnsinoController {
     @Autowired
     private InstituicaoEnsinoService service;
 
-    @Autowired
-    private ProfessorRepository professorRepository;
-
-    @Autowired
-    private DepartamentoRepository departamentoRepository;
 
     @PostMapping
     public ResponseEntity<InstituicaoEnsino> criarInstituicaoEnsino(@RequestBody InstituicaoEnsino instituicaoEnsino) {
@@ -37,6 +32,13 @@ public class InstituicaoEnsinoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(instituicaoEnsinoCriada);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<InstituicaoEnsino> buscarInstituicaoEnsino(@PathVariable Integer id) {
+        InstituicaoEnsino instituicaoEnsino = service.findById(id);
+        return ResponseEntity.ok(instituicaoEnsino);
+    }
+
+    /* 
     @PostMapping("/add-professor/{instituicaoId}")
     public ResponseEntity<?> adicionarProfessor(@PathVariable Integer instituicaoId, @RequestBody Professor professor) {
         InstituicaoEnsino instituicao = service.findById(instituicaoId);
@@ -61,4 +63,5 @@ public class InstituicaoEnsinoController {
 
         return ResponseEntity.ok(instituicao);
     }
+        */
 }
