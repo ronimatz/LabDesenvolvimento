@@ -16,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class EmpresaParceira {
+public class EmpresaParceira extends Usuario {
     
     @Column(unique = true, nullable = false)
     private String nome;
