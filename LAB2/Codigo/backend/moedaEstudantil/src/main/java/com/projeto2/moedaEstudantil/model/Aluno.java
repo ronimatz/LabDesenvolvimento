@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.validator.constraints.br.CPF;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -37,21 +38,20 @@ public class Aluno extends Usuario {
     private Endereco endereco;
 
     @OneToOne
-    @JoinColumn(name = "instituicao_ensino_id", nullable = false) // Defina o nome da coluna, se necessário
+    @JoinColumn(name = "instituicao_ensino_id", nullable = false) 
     private InstituicaoEnsino instituicaoEnsino;
 
     @OneToOne
-    @JoinColumn(name = "curso_id", nullable = false) // Defina o nome da coluna
+    @JoinColumn(name = "curso_id", nullable = false) 
     private Curso curso;
 
-    @OneToOne
-    @JoinColumn(name = "extrato_id", nullable = false) // Defina o nome da coluna
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
     private Extrato extrato;
 
     @OneToMany
     private List<Vantagem> vantagensAdquiridas;
 
-    public Aluno(String email, String senha, String nome, String cpf, String rg, Endereco endereco, InstituicaoEnsino instituicaoEnsino, Curso curso, Extrato extrato) {
+    public Aluno(String email, String senha, String nome, String cpf, String rg, Endereco endereco, InstituicaoEnsino instituicaoEnsino, Curso curso) {
         super(email, senha);
         this.nome = nome;
         this.cpf = cpf;
@@ -59,7 +59,6 @@ public class Aluno extends Usuario {
         this.endereco = endereco;
         this.instituicaoEnsino = instituicaoEnsino;
         this.curso = curso;
-        this.extrato = new Extrato(); 
         this.vantagensAdquiridas = new ArrayList<>();
     }
 }

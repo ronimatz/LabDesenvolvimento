@@ -1,11 +1,13 @@
 package com.projeto2.moedaEstudantil.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -24,9 +26,23 @@ public class Extrato {
 
     private Integer saldoMoedas;
 
-    @OneToOne
+    @OneToOne 
+    @JoinColumn(name = "usuario_id", referencedColumnName = "id")
     private Usuario usuario;
 
     @OneToMany
-    private List<Transacoes> transacoes;
+    private List<Transacoes> transacoes = new ArrayList<>();
+
+
+    public Extrato() {
+    }
+
+
+    public Extrato(Usuario usuario) {
+    
+        this.usuario = usuario;
+        
+    }
+
+
 }
