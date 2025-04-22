@@ -22,7 +22,6 @@ public class Curso {
     @GeneratedValue
     private Integer id;
 
-    
     private String nome;
     private Integer cargaHoraria;
 
