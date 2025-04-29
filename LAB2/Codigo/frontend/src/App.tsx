@@ -1,14 +1,17 @@
+import React from 'react'
 import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import Aluno from './Aluno'
+import Aluno from './Alunos'
+import CadastroAluno from './CadastroAluno'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
+    <div className="App">
+      <CadastroAluno />
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -36,7 +39,7 @@ function App() {
         curso="Engenharia de Software" 
         instituicaoEnsino="Universidade XYZ" 
       />
-    </>
+    </div>
   )
 }
 

@@ -53,7 +53,7 @@ export const deletarAluno = async (id: number) => {
 
 export const listarInstituicoes = async () => {
   try {
-    // Simulação de dados, substitua pela chamada real ao backend
+    // Simulação de dados, substituir pela chamada real ao backend
     return ['Instituição A', 'Instituição B', 'Instituição C'];
   } catch (error) {
     console.error('Erro ao listar instituições:', error);
@@ -61,9 +61,9 @@ export const listarInstituicoes = async () => {
   }
 };
 
-export const listarCursos = async (instituicaoId: string) => {
+export const listarCursos = async () => {
   try {
-    // Simulação de dados, substitua pela chamada real ao backend
+    // Simulação de dados, substituir pela chamada realbackend
     return ['Curso 1', 'Curso 2', 'Curso 3'];
   } catch (error) {
     console.error('Erro ao listar cursos:', error);

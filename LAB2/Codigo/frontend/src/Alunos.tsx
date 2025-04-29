@@ -21,9 +21,8 @@ const Aluno: React.FC<AlunoProps> = ({ nome, cpf, rg, curso, instituicaoEnsino }
     fetchInstituicoes();
   }, []);
 
-  const handleInstituicaoChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const instituicaoId = event.target.value;
-    const cursosData = await listarCursos(instituicaoId);
+  const handleInstituicaoChange = async () => {
+    const cursosData = await listarCursos();
     setCursos(cursosData);
   };
 
@@ -35,7 +34,7 @@ const Aluno: React.FC<AlunoProps> = ({ nome, cpf, rg, curso, instituicaoEnsino }
       <p><strong>RG:</strong> {rg}</p>
       <div>
         <label>Instituição de Ensino:</label>
-        <select onChange={handleInstituicaoChange} defaultValue="">
+        <select onChange={handleInstituicaoChange} value={instituicaoEnsino}>
           <option value="" disabled>Selecione uma instituição</option>
           {instituicoes.map((inst, index) => (
             <option key={index} value={inst}>{inst}</option>
@@ -44,7 +43,7 @@ const Aluno: React.FC<AlunoProps> = ({ nome, cpf, rg, curso, instituicaoEnsino }
       </div>
       <div>
         <label>Curso:</label>
-        <select defaultValue="">
+        <select value={curso}>
           <option value="" disabled>Selecione um curso</option>
           {cursos.map((curso, index) => (
             <option key={index} value={curso}>{curso}</option>
