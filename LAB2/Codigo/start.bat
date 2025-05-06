@@ -1,0 +1,13 @@
+@echo off
+echo Iniciando o projeto Moeda Estudantil...
+
+echo Iniciando o backend...
+start cmd /k "cd backend\moedaEstudantil && mvnw.cmd spring-boot:run"
+
+echo Aguardando o backend iniciar...
+timeout /t 10
+
+echo Iniciando o frontend...
+start cmd /k "cd frontend && npm run dev"
+
+echo Projeto iniciado! Acesse http://localhost:5173 no seu navegador. 

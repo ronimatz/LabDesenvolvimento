@@ -8,6 +8,9 @@ interface AlunoForm {
   rg: string;
   curso: string;
   instituicaoEnsino: string;
+  email: string;
+  senha: string;
+  confirmarSenha: string;
 }
 
 const CadastroAluno: React.FC = () => {
@@ -16,7 +19,10 @@ const CadastroAluno: React.FC = () => {
     cpf: '',
     rg: '',
     curso: '',
-    instituicaoEnsino: ''
+    instituicaoEnsino: '',
+    email: '',
+    senha: '',
+    confirmarSenha: ''
   });
 
   const [instituicoes, setInstituicoes] = useState<string[]>([]);
@@ -58,6 +64,11 @@ const CadastroAluno: React.FC = () => {
     setErro('');
     setMensagem('');
 
+    if (formData.senha !== formData.confirmarSenha) {
+      setErro('As senhas não coincidem');
+      return;
+    }
+
     try {
       await criarAluno(formData);
       setMensagem('Aluno cadastrado com sucesso!');
@@ -66,7 +77,10 @@ const CadastroAluno: React.FC = () => {
         cpf: '',
         rg: '',
         curso: '',
-        instituicaoEnsino: ''
+        instituicaoEnsino: '',
+        email: '',
+        senha: '',
+        confirmarSenha: ''
       });
     } catch (error) {
       setErro(`Erro ao cadastrar aluno: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
@@ -111,6 +125,42 @@ const CadastroAluno: React.FC = () => {
             id="rg"
             name="rg"
             value={formData.rg}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="email">E-mail:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="senha">Senha:</label>
+          <input
+            type="password"
+            id="senha"
+            name="senha"
+            value={formData.senha}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="confirmarSenha">Confirmar Senha:</label>
+          <input
+            type="password"
+            id="confirmarSenha"
+            name="confirmarSenha"
+            value={formData.confirmarSenha}
             onChange={handleChange}
             required
           />
