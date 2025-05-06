@@ -1,0 +1,27 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f4f4f4;
+  }
+  
+  h2, h3 {
+    color: #333;
+  }
+  
+  input, button {
+    display: block;
+    margin: 10px 0;
+    width: 300px;
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  .vantagem {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #fff;
+    margin-bottom: 15px;
+    border-radius: 5px;
+  }
+
+  

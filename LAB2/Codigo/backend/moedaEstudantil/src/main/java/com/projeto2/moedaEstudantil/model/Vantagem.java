@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 
 import lombok.Getter;
@@ -26,7 +27,10 @@ public class Vantagem {
     @Column(nullable = false)
     private Double valor;
 
+    @Lob
+    @Column(name = "foto_produto", columnDefinition = "BLOB")
     private byte[] fotoProduto;
+
     @Column(nullable = false)
     private Double desconto;
 

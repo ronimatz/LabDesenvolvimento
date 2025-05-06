@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmpresaParceiraDTO {
+    private Integer id;
     private String email;
     private String senha;
     private String nome;

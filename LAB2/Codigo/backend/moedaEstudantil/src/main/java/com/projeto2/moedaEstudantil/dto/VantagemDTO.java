@@ -13,5 +13,5 @@ public class VantagemDTO {
     private String descricao;
     private Double valor;
     private Double desconto;
-    private byte[] fotoProduto;
+    private String fotoProduto;
 }

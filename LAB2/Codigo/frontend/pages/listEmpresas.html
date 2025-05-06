@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empresas Parceiras</title>
+
+    <link rel="stylesheet" href="../css/listEmpresas.css">
+</head>
+<body>
+
+<h1>Empresas Parceiras</h1>
+
+<div id="empresas-container">
+    
+</div>
+
+<div id="modal-edicao" class="modal">
+    <div class="modal-conteudo">
+        <span class="fechar" onclick="fecharModal()">&times;</span>
+        <h2>Editar Empresa</h2>
+        <input type="hidden" id="empresa-id">
+
+        <label>Email:</label>
+        <input type="email" id="empresa-email"><br>
+
+        <label>Senha:</label>
+        <input type="password" id="empresa-senha"><br>
+
+        <label>Nome:</label>
+        <input type="text" id="empresa-nome"><br>
+
+        <label>CNPJ:</label>
+        <input type="text" id="empresa-cnpj"><br><br>
+
+        <h3>Vantagens</h3>
+        <div id="vantagens-container"></div>
+
+        <button onclick="adicionarCampoVantagem()">+ Adicionar Vantagem</button><br><br>
+
+        <button onclick="salvarEdicao()">Salvar</button>
+        <button onclick="fecharModal()">Cancelar</button>
+    </div>
+</div>
+  
+  
+
+
+<script src="../js/listEmpresas.js"></script>
+
+</body>
+</html>
