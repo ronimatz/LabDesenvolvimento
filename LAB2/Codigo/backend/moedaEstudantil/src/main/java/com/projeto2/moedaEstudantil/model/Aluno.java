@@ -10,6 +10,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -37,11 +38,11 @@ public class Aluno extends Usuario {
     @Embedded
     private Endereco endereco;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "instituicao_ensino_id", nullable = false) 
     private InstituicaoEnsino instituicaoEnsino;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "curso_id", nullable = false) 
     private Curso curso;
 

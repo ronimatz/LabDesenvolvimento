@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +28,11 @@ public class AlunoController {
     public ResponseEntity<AlunoResponseDTO> criar(@RequestBody AlunoDTO dto) {
         AlunoResponseDTO alunoCriado = alunoService.criarAluno(dto);
         return ResponseEntity.ok(alunoCriado);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<AlunoResponseDTO> editarAluno(@PathVariable Integer id, @RequestBody AlunoDTO dto) {
+        return ResponseEntity.ok(alunoService.editarAluno(id, dto));
     }
 
     @GetMapping

@@ -1,5 +1,7 @@
 package com.projeto2.moedaEstudantil.model;
 
+import org.hibernate.validator.constraints.br.CPF;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 
@@ -18,9 +20,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Professor extends Usuario {
     
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String nome;
+
     @Column(unique = true, nullable = false)
+    @CPF(message = "CPF inválido")
     private String cpf;
 
     @ManyToOne

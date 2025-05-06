@@ -1,0 +1,88 @@
+/* alunos.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+/* Cabeçalho da página */
+h2 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 24px;
+    color: #0056b3;
+}
+
+/* Container para a lista de alunos */
+#alunosList {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo dos cards dos alunos */
+#alunosList div {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+#alunosList div p {
+    margin: 5px 0;
+}
+
+#alunosList div button {
+    margin: 5px;
+    padding: 8px 12px;
+    border: none;
+    background-color: #28a745;
+    color: white;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#alunosList div button:hover {
+    background-color: #218838;
+}
+
+/* Botões de editar e excluir */
+#alunosList div button:nth-child(2) {
+    background-color: #007bff;
+}
+
+#alunosList div button:nth-child(2):hover {
+    background-color: #0056b3;
+}
+
+#alunosList div button:nth-child(3) {
+    background-color: #dc3545;
+}
+
+#alunosList div button:nth-child(3):hover {
+    background-color: #c82333;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    #alunosList {
+        width: 95%;
+    }
+
+    #alunosList div {
+        padding: 10px;
+    }
+
+    #alunosList div button {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}
