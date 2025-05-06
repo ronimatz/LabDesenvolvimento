@@ -4,7 +4,7 @@ async function listarAlunos() {
         const alunos = await response.json();
 
         const alunosDiv = document.getElementById('alunosList');
-        alunosDiv.innerHTML = ''; // Limpa antes de exibir
+        alunosDiv.innerHTML = ''; 
 
         alunos.forEach(aluno => {
             const alunoCard = document.createElement('div');
@@ -25,10 +25,10 @@ async function listarAlunos() {
     }
 }
 
-// Carregar a lista de alunos assim que a página for carregada
+
 document.addEventListener('DOMContentLoaded', listarAlunos);
 
-// Função para excluir aluno
+
 async function excluirAluno(id) {
     if (!confirm("Tem certeza que deseja excluir este aluno?")) return;
 
@@ -39,7 +39,7 @@ async function excluirAluno(id) {
 
         if (response.ok) {
             alert("Aluno excluído com sucesso.");
-            listarAlunos(); // Atualiza a lista
+            listarAlunos(); 
         } else {
             alert("Erro ao excluir aluno.");
         }
@@ -52,7 +52,7 @@ function abrirModal(aluno) {
     document.getElementById("editarId").value = aluno.id;
     document.getElementById("editarNome").value = aluno.nome;
     document.getElementById("editarEmail").value = aluno.email;
-    document.getElementById("editarSenha").value = ""; // vazio para não sobrescrever sem querer
+    document.getElementById("editarSenha").value = ""; 
     document.getElementById("editarCpf").value = aluno.cpf;
     document.getElementById("editarRg").value = aluno.rg;
 
@@ -73,7 +73,7 @@ function fecharModal() {
   }
 
   function editarAluno(id) {
-    // Encontrar o aluno pelo ID na lista de alunos renderizados
+    
     fetch(`http://localhost:8080/alunos/${id}`)
         .then(response => response.json())
         .then(aluno => {

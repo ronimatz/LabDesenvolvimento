@@ -39,7 +39,7 @@ async function listarEmpresas() {
         empresaTable.appendChild(empresaBody);
         empresaBloco.appendChild(empresaTable);
 
-        // Tabela de vantagens
+        
         const vantagensTable = document.createElement('table');
         vantagensTable.classList.add('vantagens-table');
 
@@ -104,14 +104,14 @@ function fecharModal() {
     document.getElementById('modal-edicao').style.display = 'none';
 }
 
-let contadorVantagens = 0; // Para gerar IDs únicos para novas vantagens
+let contadorVantagens = 0; 
 
 function adicionarCampoVantagem(vantagem = {}) {
     const container = document.getElementById('vantagens-container');
     const div = document.createElement('div');
     div.classList.add('vantagem-bloco');
     const vantagemId = vantagem.id ? `vantagem-${vantagem.id}` : `nova-vantagem-${contadorVantagens++}`;
-    div.dataset.vantagemId = vantagemId; // Armazena o ID da vantagem
+    div.dataset.vantagemId = vantagemId; 
 
     const descricaoLabel = document.createElement('label');
     descricaoLabel.textContent = 'Descrição:';
@@ -202,7 +202,7 @@ async function salvarEdicao() {
         }
     }
 
-    // Enviar as edições da empresa
+    
     const empresaDTO = { email, senha, nome, cnpj };
     await fetch(`http://localhost:8080/empresas-parceiras/${empresaId}`, {
         method: 'PUT',
@@ -210,7 +210,7 @@ async function salvarEdicao() {
         body: JSON.stringify(empresaDTO)
     });
 
-    // Adicionar novas vantagens
+    
     for (const vantagem of vantagensParaAdicionar) {
         await fetch(`http://localhost:8080/empresas-parceiras/${empresaId}/vantagens`, {
             method: 'POST',
@@ -219,7 +219,7 @@ async function salvarEdicao() {
         });
     }
 
-    // Editar vantagens existentes
+    
     for (const vantagem of vantagensParaAtualizar) {
         await fetch(`http://localhost:8080/empresas-parceiras/vantagens/${vantagem.id}`, {
             method: 'PUT',

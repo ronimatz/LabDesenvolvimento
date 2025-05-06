@@ -36,10 +36,10 @@ function adicionarVantagem() {
       let fotoProduto = null;
       if (fotoFile) {
         const base64 = await fileToBase64(fotoFile);
-        fotoProduto = base64.split(',')[1]; // remove cabeçalho "data:image/jpeg;base64,"
+        fotoProduto = base64.split(',')[1]; 
       }
   
-      // Enviar como string base64, sem usar atob
+      
       vantagens.push({ descricao, valor, desconto, fotoProduto });
     }
   

@@ -71,6 +71,24 @@ h2 {
     background-color: #c82333;
 }
 
+.voltar-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-decoration: none;
+    font-size: 18px;
+    color: #007bff;
+    background-color: #e9f0f7;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .voltar-btn:hover {
+    background-color: #d0e2f0;
+  }
+
 /* Responsividade */
 @media (max-width: 768px) {
     #alunosList {
