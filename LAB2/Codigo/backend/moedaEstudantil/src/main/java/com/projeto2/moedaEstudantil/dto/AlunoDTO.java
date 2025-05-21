@@ -15,7 +15,10 @@ public class AlunoDTO {
     private String email;
     private String senha;
     private String nome;
+
+    @CPFVALIDO
     private String cpf;
+    
     private String rg;
     private Endereco endereco;
     private Integer instituicaoId;

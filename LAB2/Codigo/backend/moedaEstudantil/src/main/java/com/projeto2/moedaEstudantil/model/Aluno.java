@@ -28,7 +28,8 @@ public class Aluno extends Usuario {
     private String nome;
     
     @Column(unique = true, nullable = false)
-    @CPF(message = "CPF inválido")
+   // @CPF(message = "CPF inválido")
+    @CPFVALIDO
     private String cpf;
     
     @Column(unique = true, nullable = false)
