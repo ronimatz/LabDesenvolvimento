@@ -28,8 +28,11 @@ public class InstituicaoEnsino {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String nome;
+
+    @Column(unique = true, nullable = false)
+    private String cnpj;
 
     @OneToMany(mappedBy = "instituicaoEnsino", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Professor> professores;

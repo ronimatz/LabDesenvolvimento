@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo</title>
+    <link rel="stylesheet" href="../css/adminDashboard.css">
+</head>
+<body>
+    <div class="container">
+        <h1>PAINEL ADMINISTRATIVO</h1>
+        
+        <!-- Formulário de Instituição -->
+        <div class="section">
+            <h2>Cadastro de Instituição</h2>
+            <form id="instituicaoForm">
+                <div class="form-group">
+                    <input type="text" id="nomeInstituicao" placeholder="Nome da Instituição" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="cnpj" placeholder="CNPJ" required>
+                </div>
+                <button type="submit" class="submit-btn">Cadastrar Instituição</button>
+            </form>
+        </div>
+
+        <!-- Formulário de Departamento -->
+        <div class="section">
+            <h2>Cadastro de Departamento</h2>
+            <form id="departamentoForm">
+                <div class="form-group">
+                    <select id="instituicaoSelect" required>
+                        <option value="">Selecione a Instituição</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="nomeDepartamento" placeholder="Nome do Departamento" required>
+                </div>
+                <button type="submit" class="submit-btn">Cadastrar Departamento</button>
+            </form>
+        </div>
+
+        <!-- Formulário de Professor -->
+        <div class="section">
+            <h2>Cadastro de Professor</h2>
+            <form id="professorForm">
+                <div class="form-group">
+                    <select id="instituicaoProfessorSelect" required>
+                        <option value="">Selecione a Instituição</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select id="departamentoSelect" required>
+                        <option value="">Selecione o Departamento</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="nomeProfessor" placeholder="Nome do Professor" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="emailProfessor" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="cpfProfessor" placeholder="CPF" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="senhaProfessor" placeholder="Senha" required>
+                </div>
+                <button type="submit" class="submit-btn">Cadastrar Professor</button>
+            </form>
+        </div>
+
+        <!-- Formulário de Curso -->
+        <div class="section">
+            <h2>Cadastro de Curso</h2>
+            <form id="cursoForm">
+                <div class="form-group">
+                    <select id="instituicaoCursoSelect" required>
+                        <option value="">Selecione a Instituição</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select id="departamentoCursoSelect" required>
+                        <option value="">Selecione o Departamento</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="nomeCurso" placeholder="Nome do Curso" required>
+                </div>
+                <button type="submit" class="submit-btn">Cadastrar Curso</button>
+            </form>
+        </div>
+
+        <!-- Lista de Instituições e seus Departamentos -->
+        <div class="section">
+            <h2>Instituições e Departamentos</h2>
+            <div id="instituicoesList" class="list-container">
+                <!-- Dados serão inseridos aqui via JavaScript -->
+            </div>
+        </div>
+    </div>
+    <script src="../js/adminDashboard.js"></script>
+</body>
+</html> 

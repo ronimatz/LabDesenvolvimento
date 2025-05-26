@@ -3,7 +3,8 @@ package com.projeto2.moedaEstudantil.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.validator.constraints.br.CPF;
+
+import com.validation.CpfValido;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -17,6 +18,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "alunos")
@@ -28,7 +30,8 @@ public class Aluno extends Usuario {
     private String nome;
     
     @Column(unique = true, nullable = false)
-    @CPF(message = "CPF inválido")
+   // @CPF(message = "CPF inválido")
+    @CpfValido
     private String cpf;
     
     @Column(unique = true, nullable = false)
@@ -51,6 +54,13 @@ public class Aluno extends Usuario {
 
     @OneToMany
     private List<Vantagem> vantagensAdquiridas;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(nullable = false)
+    private Integer saldoMoedas = 0; // Alunos começam com 0 moedas
 
     public Aluno(String email, String senha, String nome, String cpf, String rg, Endereco endereco, InstituicaoEnsino instituicaoEnsino, Curso curso) {
         super(email, senha);

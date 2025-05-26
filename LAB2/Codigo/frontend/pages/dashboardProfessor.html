@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Professor</title>
+    <link rel="stylesheet" href="../css/dashboardProfessor.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Dashboard Professor</h1>
+            <div class="saldo-container">
+                <span>Saldo: </span>
+                <span id="saldoMoedas">0</span>
+            </div>
+        </div>
+
+        <div class="welcome-message">
+            <p id="welcomeMessage">Olá, professor!</p>
+        </div>
+
+        <div class="actions">
+            <button onclick="window.location.href='envioMoedas.html'" class="action-button">Enviar moedas</button>
+            <button onclick="window.location.href='historicoEnvios.html'" class="action-button">Histórico de transações</button>
+        </div>
+    </div>
+    <script src="../js/dashboardProfessor.js"></script>
+</body>
+</html> 
