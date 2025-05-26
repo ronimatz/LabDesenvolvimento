@@ -1,6 +1,7 @@
 package com.projeto2.moedaEstudantil.dto.request;
 
-import com.validation.CnpjValido;
+import com.projeto2.moedaEstudantil.validation.CnpjValido;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;

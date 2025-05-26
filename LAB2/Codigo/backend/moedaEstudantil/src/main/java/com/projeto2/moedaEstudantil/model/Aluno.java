@@ -3,8 +3,7 @@ package com.projeto2.moedaEstudantil.model;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import com.validation.CpfValido;
+import com.projeto2.moedaEstudantil.validation.CpfValido;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

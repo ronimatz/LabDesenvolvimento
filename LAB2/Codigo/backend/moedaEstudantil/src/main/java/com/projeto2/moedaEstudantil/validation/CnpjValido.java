@@ -1,4 +1,4 @@
-package com.validation;
+package com.projeto2.moedaEstudantil.validation;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

@@ -1,7 +1,7 @@
 package com.projeto2.moedaEstudantil.dto;
 
 import com.projeto2.moedaEstudantil.model.Endereco;
-import com.validation.CpfValido;
+import com.projeto2.moedaEstudantil.validation.CpfValido;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

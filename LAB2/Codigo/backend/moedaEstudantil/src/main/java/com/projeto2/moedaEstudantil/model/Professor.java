@@ -1,7 +1,7 @@
 package com.projeto2.moedaEstudantil.model;
 
 
-import com.validation.CpfValido;
+import com.projeto2.moedaEstudantil.validation.CpfValido;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

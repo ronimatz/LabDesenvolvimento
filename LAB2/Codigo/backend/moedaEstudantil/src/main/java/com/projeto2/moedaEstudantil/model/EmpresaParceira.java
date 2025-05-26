@@ -5,7 +5,7 @@ import java.util.List;
 
 
 import com.projeto2.moedaEstudantil.model.enums.Role;
-import com.validation.CnpjValido;
+import com.projeto2.moedaEstudantil.validation.CnpjValido;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

@@ -1,7 +1,7 @@
 package com.projeto2.moedaEstudantil.dto;
 
 
-import com.validation.CpfValido;
+
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -19,7 +19,7 @@ public class CadastroProfessorDTO {
     private String email;
 
     @NotBlank(message = "O CPF é obrigatório")
-    @CpfValido(message = "CPF inválido")
+    @com.projeto2.moedaEstudantil.validation.CpfValido(message = "CPF inválido")
     private String cpf;
 
     @NotBlank(message = "A senha é obrigatória")

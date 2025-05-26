@@ -1,4 +1,4 @@
-package com.validation;
+package com.projeto2.moedaEstudantil.validation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
