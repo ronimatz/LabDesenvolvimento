@@ -1,3 +1,5 @@
+package com.validation;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -9,7 +11,7 @@ import jakarta.validation.Payload;
 @Constraint(validatedBy = ValidCPF.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CPFVALIDO {
+public @interface CpfValido {
 	String message() default "CPF inválido, favor verificar";
 	Class <?> [] groups() default {};
 	Class<? extends Payload> [] payload() default {};

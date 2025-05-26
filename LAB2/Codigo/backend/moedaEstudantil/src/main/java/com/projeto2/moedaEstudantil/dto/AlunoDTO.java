@@ -1,6 +1,7 @@
 package com.projeto2.moedaEstudantil.dto;
 
 import com.projeto2.moedaEstudantil.model.Endereco;
+import com.validation.CpfValido;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class AlunoDTO {
     private String senha;
     private String nome;
 
-    @CPFVALIDO
+    @CpfValido
     private String cpf;
     
     private String rg;

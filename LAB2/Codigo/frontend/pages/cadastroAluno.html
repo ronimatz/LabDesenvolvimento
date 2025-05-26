@@ -3,32 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cadastro de Aluno</title>
+  <title>Sistema de Moedas Estudantis</title>
   <link rel="stylesheet" href="../css/cadastroAluno.css" />
 </head>
 <body>
   <a href="inicialPage.html" class="voltar-btn">&#8592; Voltar</a>
   <div class="container">
-    <h1>Cadastro de Aluno</h1>
+    <h1>SISTEMA DE MOEDAS ESTUDANTIS</h1>
+    <div class="toggle-buttons">
+      <button class="active">Aluno</button>
+      <button onclick="window.location.href='cadastroEmpresaParceira.html'">Empresa parceira</button>
+    </div>
     <form id="alunoForm">
       <input type="text" id="nome" placeholder="Nome completo" required />
       <input type="email" id="email" placeholder="Email" required />
       <input type="password" id="senha" placeholder="Senha" required />
-      <input type="text" id="cpf" placeholder="CPF" required />
-      <input type="text" id="rg" placeholder="RG" required />
-
-      <h3>Endereço</h3>
-      <input type="text" id="rua" placeholder="Rua" required />
-      <input type="text" id="bairro" placeholder="Bairro" required />
-      <input type="number" id="numero" placeholder="Número" required />
-      <input type="text" id="complemento" placeholder="Complemento" />
-      <input type="text" id="cidade" placeholder="Cidade" required />
-      <input type="text" id="estado" placeholder="Estado" required />
-
-      <input type="number" id="instituicaoId" placeholder="ID da Instituição" required />
-      <input type="number" id="cursoId" placeholder="ID do Curso" required />
-
-      <button type="submit">Cadastrar</button>
+      <div class="document-row">
+        <input type="text" id="cpf" placeholder="CPF" required />
+        <input type="text" id="rg" placeholder="RG" required />
+      </div>
+      <div class="address-row">
+        <input type="text" id="rua" placeholder="Rua" required />
+        <input type="text" id="numero" placeholder="Número" required />
+        <input type="text" id="complemento" placeholder="Complemento" />
+      </div>
+      <div class="address-row">
+        <input type="text" id="bairro" placeholder="Bairro" required />
+        <input type="text" id="cidade" placeholder="Cidade" required />
+        <input type="text" id="uf" placeholder="UF" required />
+      </div>
+      <div class="institution-row">
+        <select id="instituicaoSelect" required>
+          <option value="">Selecione a Instituição</option>
+        </select>
+        <select id="cursoSelect" required>
+          <option value="">Selecione o Curso</option>
+        </select>
+      </div>
+      <button type="submit" class="cadastrar-btn">Cadastrar</button>
       <button onclick="window.location.href='listAlunos.html'">Ver Alunos Cadastrados</button>
     </form>
     <div id="mensagem"></div>

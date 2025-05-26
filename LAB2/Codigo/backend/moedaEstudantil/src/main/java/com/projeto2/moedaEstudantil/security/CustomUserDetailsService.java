@@ -1,13 +1,13 @@
 package com.projeto2.moedaEstudantil.security;
 
-import java.util.ArrayList;
+
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import com.projeto2.moedaEstudantil.model.Usuario;
+
 import com.projeto2.moedaEstudantil.repositories.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -28,18 +28,12 @@ public class CustomUserDetailsService implements UserDetailsService {
      * Carrega o usuário com base no e-mail informado.
      *
      * @param username o e-mail do usuário.
-     * @return objeto {@link UserDetails} contendo o e-mail, senha e lista de authorities (vazia).
+     * @return objeto {@link UserDetails} contendo o e-mail, senha e lista de authorities.
      * @throws UsernameNotFoundException se o usuário não for encontrado no repositório.
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario user = this.repository.findByEmail(username)
+        return repository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getSenha(),
-                new ArrayList<>() // Nenhuma role/authority definida no momento
-        );
     }
 }

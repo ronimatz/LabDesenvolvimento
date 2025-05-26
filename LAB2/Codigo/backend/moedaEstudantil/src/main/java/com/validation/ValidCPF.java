@@ -1,9 +1,11 @@
+package com.validation;
+
 
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class ValidCPF implements ConstraintValidator<CPFVALIDO, String>{
+public class ValidCPF implements ConstraintValidator<CpfValido, String>{
 
 	@Override
 	public boolean isValid(String cpf, ConstraintValidatorContext context) {

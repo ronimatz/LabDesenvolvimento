@@ -5,16 +5,17 @@ import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.projeto2.moedaEstudantil.dto.EmpresaParceiraDTO;
 import com.projeto2.moedaEstudantil.dto.VantagemDTO;
+import com.projeto2.moedaEstudantil.dto.request.EmpresaParceiraRequestDTO;
 import com.projeto2.moedaEstudantil.model.EmpresaParceira;
 import com.projeto2.moedaEstudantil.model.Vantagem;
 import com.projeto2.moedaEstudantil.repositories.EmpresaParceiraRepository;
 import com.projeto2.moedaEstudantil.repositories.VantagemRepository;
-
 
 @Service
 public class EmpresaParceiraService {
@@ -24,6 +25,9 @@ public class EmpresaParceiraService {
 
     @Autowired
     private VantagemRepository vantagemRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Transactional
     public EmpresaParceira cadastrarEmpresa(EmpresaParceiraDTO dto) {
@@ -64,7 +68,6 @@ public class EmpresaParceiraService {
 
         return empresaParceiraRepository.save(empresa);
     }
-
 
     public List<EmpresaParceira> listarTodas() {
         return empresaParceiraRepository.findAll();
@@ -153,5 +156,26 @@ public class EmpresaParceiraService {
     @Transactional
     public void deletarEmpresa(Integer id) {
         empresaParceiraRepository.deleteById(id);
+    }
+
+    public void cadastrarEmpresaParceira(EmpresaParceiraRequestDTO dto) {
+        if (empresaParceiraRepository.existsByEmail(dto.getEmail())) {
+            throw new RuntimeException("Email já cadastrado");
+        }
+
+        if (empresaParceiraRepository.existsByCnpj(dto.getCnpj())) {
+            throw new RuntimeException("CNPJ já cadastrado");
+        }
+
+        EmpresaParceira empresaParceira = new EmpresaParceira();
+        empresaParceira.setEmail(dto.getEmail());
+        empresaParceira.setSenha(passwordEncoder.encode(dto.getSenha()));
+        empresaParceira.setCnpj(dto.getCnpj());
+        empresaParceira.setNome(dto.getNomeFantasia());
+        empresaParceira.setDescricao(dto.getDescricao());
+        empresaParceira.setEndereco(dto.getEndereco());
+        empresaParceira.setTelefone(dto.getTelefone());
+
+        empresaParceiraRepository.save(empresaParceira);
     }
 }

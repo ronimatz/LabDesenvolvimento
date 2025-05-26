@@ -1,10 +1,10 @@
 package com.projeto2.moedaEstudantil.model;
 
-import org.hibernate.validator.constraints.br.CPF;
+
+import com.validation.CpfValido;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -24,7 +24,7 @@ public class Professor extends Usuario {
     private String nome;
 
     @Column(unique = true, nullable = false)
-    @CPF(message = "CPF inválido")
+    @CpfValido(message = "CPF inválido")
     private String cpf;
 
     @ManyToOne
@@ -37,6 +37,8 @@ public class Professor extends Usuario {
 
     @OneToOne
     private Extrato extrato;
+
+    private Integer saldoMoedas = 100; // Cada professor começa com 100 moedas
 
     public Professor(String email, String senha, String nome, String cpf, Departamento departamento, InstituicaoEnsino instituicaoEnsino, Extrato extrato) {
         super(email, senha);

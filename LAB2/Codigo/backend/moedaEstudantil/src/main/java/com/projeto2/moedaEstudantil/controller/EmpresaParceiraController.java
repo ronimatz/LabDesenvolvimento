@@ -22,6 +22,9 @@ import com.projeto2.moedaEstudantil.dto.VantagemDTO;
 import com.projeto2.moedaEstudantil.model.EmpresaParceira;
 import com.projeto2.moedaEstudantil.model.Vantagem;
 import com.projeto2.moedaEstudantil.services.EmpresaParceiraService;
+import com.projeto2.moedaEstudantil.dto.request.EmpresaParceiraRequestDTO;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/empresas-parceiras")
@@ -115,5 +118,11 @@ public class EmpresaParceiraController {
         } catch (EmptyResultDataAccessException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Empresa com ID '" + id + "' não encontrada.");
         }
+    }
+
+    @PostMapping("/cadastro")
+    public ResponseEntity<Void> cadastrarEmpresaParceira(@Valid @RequestBody EmpresaParceiraRequestDTO dto) {
+        empresaParceiraService.cadastrarEmpresaParceira(dto);
+        return ResponseEntity.ok().build();
     }
 }

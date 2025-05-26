@@ -6,9 +6,12 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.projeto2.moedaEstudantil.dto.CursoDTO;
 import com.projeto2.moedaEstudantil.dto.response.CursoResponseDTO;
+import com.projeto2.moedaEstudantil.dto.response.CursoListDTO;
+import com.projeto2.moedaEstudantil.dto.CadastroCursoDTO;
 import com.projeto2.moedaEstudantil.model.Curso;
 import com.projeto2.moedaEstudantil.model.Departamento;
 import com.projeto2.moedaEstudantil.repositories.CursoRepository;
@@ -72,6 +75,33 @@ public class CursoService {
             throw new RuntimeException("Curso não encontrado");
         }
         cursoRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Curso cadastrarCurso(CadastroCursoDTO dto) {
+        Departamento departamento = departamentoRepository.findById(dto.getDepartamentoId())
+                .orElseThrow(() -> new RuntimeException("Departamento não encontrado"));
+
+        Curso curso = new Curso();
+        curso.setNome(dto.getNome());
+        curso.setDepartamento(departamento);
+
+        return cursoRepository.save(curso);
+    }
+
+    public List<CursoListDTO> listarCursosPorInstituicao(Integer instituicaoId) {
+        List<Curso> cursos = cursoRepository.findByDepartamentoInstituicaoEnsinoId(instituicaoId);
+        return cursos.stream()
+                .map(this::toCursoListDTO)
+                .collect(Collectors.toList());
+    }
+
+    private CursoListDTO toCursoListDTO(Curso curso) {
+        CursoListDTO dto = new CursoListDTO();
+        dto.setId(curso.getId());
+        dto.setNome(curso.getNome());
+        dto.setDepartamentoNome(curso.getDepartamento().getNome());
+        return dto;
     }
 
     private CursoResponseDTO toDTO(Curso curso) {
