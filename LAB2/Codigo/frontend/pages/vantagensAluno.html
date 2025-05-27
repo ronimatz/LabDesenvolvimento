@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vantagens Disponíveis</title>
+    <link rel="stylesheet" href="../css/vantagensAluno.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Vantagens Disponíveis</h1>
+            <div class="saldo-container">
+                <span>Saldo: </span>
+                <span id="saldoMoedas">0</span>
+            </div>
+        </div>
+
+        <div id="vantagens-grid"></div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div id="modal-confirmacao" class="modal">
+        <div class="modal-content">
+            <h2>Confirmar Resgate</h2>
+            <div class="vantagem-info">
+                <img id="modal-foto" src="" alt="Produto">
+                <h3 id="modal-nome"></h3>
+                <p id="modal-preco"></p>
+            </div>
+            <div class="saldo-info">
+                <p>Saldo atual: <span id="modal-saldo-atual"></span></p>
+                <p>Saldo após compra: <span id="modal-saldo-apos"></span></p>
+            </div>
+            <div class="modal-buttons">
+                <button id="confirmar-btn">Sim</button>
+                <button id="cancelar-btn">Não</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/vantagensAluno.js"></script>
+</body>
+</html> 

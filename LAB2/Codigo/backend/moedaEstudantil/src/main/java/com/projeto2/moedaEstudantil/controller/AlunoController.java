@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projeto2.moedaEstudantil.dto.AlunoDTO;
+import com.projeto2.moedaEstudantil.dto.ResgatarVantagemDTO;
+import com.projeto2.moedaEstudantil.dto.response.AlunoInfoDTO;
 import com.projeto2.moedaEstudantil.dto.response.AlunoResponseDTO;
 import com.projeto2.moedaEstudantil.services.AlunoService;
 
@@ -51,7 +54,15 @@ public class AlunoController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/info")
+    public ResponseEntity<AlunoInfoDTO> getAlunoInfo(Authentication authentication) {
+        AlunoInfoDTO aluno = alunoService.getAlunoInfo(authentication);
+        return ResponseEntity.ok(aluno);
+    }
 
-
-
+    @PostMapping("/resgatar-vantagem")
+    public ResponseEntity<Void> resgatarVantagem(@RequestBody ResgatarVantagemDTO dto, Authentication authentication) {
+        alunoService.resgatarVantagem(dto.getVantagemId(), authentication);
+        return ResponseEntity.ok().build();
+    }
 }

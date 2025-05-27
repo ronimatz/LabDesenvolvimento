@@ -4,19 +4,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.projeto2.moedaEstudantil.dto.AlunoDTO;
+import com.projeto2.moedaEstudantil.dto.response.AlunoInfoDTO;
 import com.projeto2.moedaEstudantil.dto.response.AlunoResponseDTO;
 import com.projeto2.moedaEstudantil.model.Aluno;
 import com.projeto2.moedaEstudantil.model.Curso;
 import com.projeto2.moedaEstudantil.model.Departamento;
 import com.projeto2.moedaEstudantil.model.Extrato;
 import com.projeto2.moedaEstudantil.model.InstituicaoEnsino;
+import com.projeto2.moedaEstudantil.model.Vantagem;
 import com.projeto2.moedaEstudantil.repositories.AlunoRepository;
 import com.projeto2.moedaEstudantil.repositories.CursoRepository;
-
 import com.projeto2.moedaEstudantil.repositories.InstituicaoEnsinoRepository;
+import com.projeto2.moedaEstudantil.repositories.VantagemRepository;
 
 @Service
 public class AlunoService {
@@ -29,6 +33,9 @@ public class AlunoService {
 
     @Autowired
     private InstituicaoEnsinoRepository instituicaoRepository;
+
+    @Autowired
+    private VantagemRepository vantagemRepository;
 
     public AlunoResponseDTO criarAluno(AlunoDTO dto) {
     if (alunoRepository.existsByCpf(dto.getCpf())) {
@@ -127,5 +134,40 @@ public class AlunoService {
                 aluno.getEndereco(),
                 aluno.getCurso().getNome(),
                 aluno.getInstituicaoEnsino().getNome());
+    }
+
+    public AlunoInfoDTO getAlunoInfo(Authentication authentication) {
+        String email = authentication.getName();
+        Aluno aluno = alunoRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        
+        AlunoInfoDTO dto = new AlunoInfoDTO();
+        dto.setId(aluno.getId());
+        dto.setNome(aluno.getNome());
+        dto.setEmail(aluno.getEmail());
+        dto.setSaldoMoedas(aluno.getSaldoMoedas());
+        dto.setCurso(aluno.getCurso().getNome());
+        dto.setInstituicao(aluno.getInstituicaoEnsino().getNome());
+        
+        return dto;
+    }
+
+    @Transactional
+    public void resgatarVantagem(Integer vantagemId, Authentication authentication) {
+        String email = authentication.getName();
+        Aluno aluno = alunoRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        
+        Vantagem vantagem = vantagemRepository.findById(vantagemId)
+                .orElseThrow(() -> new RuntimeException("Vantagem não encontrada"));
+
+        if (aluno.getSaldoMoedas() < vantagem.getValor()) {
+            throw new RuntimeException("Saldo insuficiente para resgatar esta vantagem");
+        }
+
+        aluno.setSaldoMoedas(aluno.getSaldoMoedas() - vantagem.getValor());
+        aluno.getVantagensAdquiridas().add(vantagem);
+        
+        alunoRepository.save(aluno);
     }
 }
