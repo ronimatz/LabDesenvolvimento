@@ -4,18 +4,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.projeto2.moedaEstudantil.dto.AlunoDTO;
 import com.projeto2.moedaEstudantil.dto.response.AlunoResponseDTO;
+import com.projeto2.moedaEstudantil.dto.response.AlunoInfoDTO;
+import com.projeto2.moedaEstudantil.dto.response.TransacaoRecebimentoDTO;
+import com.projeto2.moedaEstudantil.dto.response.VantagemAdquiridaDTO;
 import com.projeto2.moedaEstudantil.model.Aluno;
 import com.projeto2.moedaEstudantil.model.Curso;
 import com.projeto2.moedaEstudantil.model.Departamento;
 import com.projeto2.moedaEstudantil.model.Extrato;
 import com.projeto2.moedaEstudantil.model.InstituicaoEnsino;
+import com.projeto2.moedaEstudantil.model.Transacao;
+import com.projeto2.moedaEstudantil.model.VantagemAdquirida;
 import com.projeto2.moedaEstudantil.repositories.AlunoRepository;
 import com.projeto2.moedaEstudantil.repositories.CursoRepository;
-
+import com.projeto2.moedaEstudantil.repositories.TransacaoRepository;
+import com.projeto2.moedaEstudantil.repositories.VantagemAdquiridaRepository;
 import com.projeto2.moedaEstudantil.repositories.InstituicaoEnsinoRepository;
 
 @Service
@@ -29,6 +36,12 @@ public class AlunoService {
 
     @Autowired
     private InstituicaoEnsinoRepository instituicaoRepository;
+
+    @Autowired
+    private TransacaoRepository transacaoRepository;
+
+    @Autowired
+    private VantagemAdquiridaRepository vantagemAdquiridaRepository;
 
     public AlunoResponseDTO criarAluno(AlunoDTO dto) {
     if (alunoRepository.existsByCpf(dto.getCpf())) {
@@ -127,5 +140,51 @@ public class AlunoService {
                 aluno.getEndereco(),
                 aluno.getCurso().getNome(),
                 aluno.getInstituicaoEnsino().getNome());
+    }
+
+    public AlunoInfoDTO getInfo(Authentication authentication) {
+        String email = authentication.getName();
+        Aluno aluno = alunoRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado"));
+
+        return AlunoInfoDTO.builder()
+                .nome(aluno.getNome())
+                .saldoMoedas(aluno.getExtrato().getSaldoMoedas())
+                .build();
+    }
+
+    public List<TransacaoRecebimentoDTO> getHistoricoRecebimentos(Authentication authentication) {
+        String email = authentication.getName();
+        Aluno aluno = alunoRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado"));
+
+        List<Transacao> transacoes = transacaoRepository.findByAlunoOrderByDataDesc(aluno);
+
+        return transacoes.stream()
+                .map(transacao -> TransacaoRecebimentoDTO.builder()
+                        .professorNome(transacao.getProfessor().getNome())
+                        .data(transacao.getData())
+                        .motivo(transacao.getMotivo())
+                        .quantidade(transacao.getQuantidade())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    public List<VantagemAdquiridaDTO> getVantagensAdquiridas(Authentication authentication) {
+        String email = authentication.getName();
+        Aluno aluno = alunoRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado"));
+
+        List<VantagemAdquirida> vantagens = vantagemAdquiridaRepository.findByAlunoOrderByDataAquisicaoDesc(aluno);
+
+        return vantagens.stream()
+                .map(vantagem -> VantagemAdquiridaDTO.builder()
+                        .empresa(vantagem.getVantagem().getEmpresa().getNome())
+                        .descricao(vantagem.getVantagem().getDescricao())
+                        .dataAquisicao(vantagem.getDataAquisicao())
+                        .custo(vantagem.getVantagem().getCusto())
+                        .status(vantagem.getStatus().toString())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

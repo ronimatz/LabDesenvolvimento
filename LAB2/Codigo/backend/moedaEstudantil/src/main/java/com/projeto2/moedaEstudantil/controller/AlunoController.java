@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.projeto2.moedaEstudantil.dto.AlunoDTO;
 import com.projeto2.moedaEstudantil.dto.response.AlunoResponseDTO;
+import com.projeto2.moedaEstudantil.dto.response.AlunoInfoDTO;
+import com.projeto2.moedaEstudantil.dto.response.TransacaoRecebimentoDTO;
+import com.projeto2.moedaEstudantil.dto.response.VantagemAdquiridaDTO;
 import com.projeto2.moedaEstudantil.services.AlunoService;
 
 @RestController
@@ -51,7 +55,18 @@ public class AlunoController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/info")
+    public ResponseEntity<AlunoInfoDTO> getInfo(Authentication authentication) {
+        return ResponseEntity.ok(alunoService.getInfo(authentication));
+    }
 
+    @GetMapping("/historico-recebimentos")
+    public ResponseEntity<List<TransacaoRecebimentoDTO>> getHistoricoRecebimentos(Authentication authentication) {
+        return ResponseEntity.ok(alunoService.getHistoricoRecebimentos(authentication));
+    }
 
-
+    @GetMapping("/vantagens-adquiridas")
+    public ResponseEntity<List<VantagemAdquiridaDTO>> getVantagensAdquiridas(Authentication authentication) {
+        return ResponseEntity.ok(alunoService.getVantagensAdquiridas(authentication));
+    }
 }
