@@ -14,6 +14,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // Adiciona evento de logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userRole');
+        window.location.href = 'login.html';
+    });
+
     // Carregar instituições existentes
     await loadInstituicoes();
 
@@ -269,7 +276,8 @@ async function handleCursoSubmit(e) {
 
     const cursoData = {
         nome: document.getElementById('nomeCurso').value,
-        departamentoId: parseInt(document.getElementById('departamentoCursoSelect').value)
+        departamentoId: parseInt(document.getElementById('departamentoCursoSelect').value),
+        cargaHoraria: parseInt(document.getElementById('cargaHorariaCurso').value)
     };
 
     try {
@@ -292,5 +300,26 @@ async function handleCursoSubmit(e) {
     } catch (error) {
         console.error('Erro:', error);
         alert('Erro ao cadastrar curso: ' + error.message);
+    }
+}
+
+async function distribuirMoedas() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://localhost:8080/admin/distribuir-moedas', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Erro ao distribuir moedas');
+        }
+
+        alert('Moedas distribuídas com sucesso para todos os professores!');
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Erro ao distribuir moedas. Por favor, tente novamente.');
     }
 } 

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Vantagem</title>
+    <link rel="stylesheet" href="../css/vantagem.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .title {
+            color: #6366f1;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+        }
+
+        .form-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .form-fields {
+            flex: 1;
+        }
+
+        .image-upload {
+            flex: 1;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .form-group small {
+            display: block;
+            color: #666;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .button {
+            padding: 8px 20px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .button-cancel {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .button-submit {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .footer a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        #preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            display: none;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">CADASTRO DE VANTAGENS OFERECIDAS</div>
+        
+        <form id="vantagem-form">
+            <div class="form-container">
+                <div class="form-fields">
+                    <div class="form-group">
+                        <input type="text" id="nome" name="nome" placeholder="Nome - Sidney Sores" required>
+                        <small>*Preencha com o nome completo da vantagem oferecida</small>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="text" id="descricao" name="descricao" placeholder="Descrição - 15% de desconto" required>
+                        <small>*Seja o mais claro possível ao descrever suas vantagens</small>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="number" id="custo" name="custo" placeholder="Custo - 1.000 moedas" required>
+                        <small>*Indique um valor acessível para que todos os alunos possam participar</small>
+                    </div>
+                </div>
+
+                <div class="image-upload" id="drop-zone">
+                    <div id="upload-text">
+                        Arraste um arquivo aqui, ou<br>
+                        <span style="color: #6366f1; cursor: pointer;" onclick="document.getElementById('file-input').click()">selecione um arquivo</span> para carregar
+                    </div>
+                    <input type="file" id="file-input" accept="image/*" style="display: none">
+                    <img id="preview-image" src="#" alt="Preview">
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="button button-cancel" onclick="window.location.href='dashboard-empresa.html'">Cancelar</button>
+                <button type="submit" class="button button-submit">Cadastrar</button>
+            </div>
+        </form>
+
+        <div class="footer">
+            <span>Copyright © Todos os direitos reservados. Desenvolvido por Projeto de Software</span>
+            <div>
+                <a href="#">Política de Privacidade</a> |
+                <a href="#">Política de Vagas</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080';
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const previewImage = document.getElementById('preview-image');
+        const uploadText = document.getElementById('upload-text');
+        let selectedFile = null;
+
+        // Previne o comportamento padrão de drag and drop do navegador
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Highlight drop zone quando item é arrastado sobre
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropZone.style.border = '2px dashed #6366f1';
+        }
+
+        function unhighlight(e) {
+            dropZone.style.border = '2px dashed #ccc';
+        }
+
+        // Handle dropped files
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        fileInput.addEventListener('change', function(e) {
+            handleFiles(this.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                selectedFile = files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                    uploadText.style.display = 'none';
+                }
+                reader.readAsDataURL(selectedFile);
+            }
+        }
+
+        document.getElementById('vantagem-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('nome', document.getElementById('nome').value);
+                formData.append('descricao', document.getElementById('descricao').value);
+                formData.append('valor', document.getElementById('custo').value);
+                if (selectedFile) {
+                    formData.append('imagem', selectedFile);
+                }
+
+                // Primeiro, buscar as informações da empresa para obter o ID
+                const infoResponse = await fetch(`${API_BASE_URL}/empresas-parceiras/info`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!infoResponse.ok) {
+                    throw new Error('Erro ao buscar informações da empresa');
+                }
+
+                const empresaInfo = await infoResponse.json();
+                
+                // Criar o objeto de vantagem no formato que o backend espera
+                const vantagemData = {
+                    descricao: document.getElementById('nome').value,
+                    valor: parseFloat(document.getElementById('custo').value),
+                    desconto: document.getElementById('descricao').value
+                };
+
+                if (selectedFile) {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(selectedFile);
+                    await new Promise((resolve, reject) => {
+                        reader.onload = () => {
+                            // Remove o prefixo "data:image/...;base64," da string base64
+                            vantagemData.fotoProduto = reader.result.split(',')[1];
+                            resolve();
+                        };
+                        reader.onerror = reject;
+                    });
+                }
+
+                const response = await fetch(`${API_BASE_URL}/empresas-parceiras/${empresaInfo.id}/vantagens`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(vantagemData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao cadastrar vantagem');
+                }
+
+                alert('Vantagem cadastrada com sucesso!');
+                window.location.href = 'vantagens-empresa.html';
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao cadastrar vantagem. Por favor, tente novamente.');
+            }
+        });
+    </script>
+</body>
+</html> 

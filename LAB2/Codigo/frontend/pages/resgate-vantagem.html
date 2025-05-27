@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resgate de Vantagens</title>
+    <link rel="stylesheet" href="../css/vantagem.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Resgate de Vantagens</h1>
+        <div id="saldo-container">
+            Saldo: <span id="saldo">0</span> moedas
+        </div>
+
+        <!-- Lista de Vantagens -->
+        <div id="vantagens-container" class="grid-container">
+            <!-- Vantagens serão inseridas aqui dinamicamente -->
+        </div>
+
+        <!-- Modal de Confirmação -->
+        <div id="modal-confirmacao" class="modal">
+            <div class="modal-content">
+                <h2>Confirmar Resgate</h2>
+                <div id="vantagem-detalhes">
+                    <p>Vantagem: <span id="vantagem-nome"></span></p>
+                    <p>Valor: <span id="vantagem-valor"></span> moedas</p>
+                    <p>Empresa: <span id="vantagem-empresa"></span></p>
+                </div>
+                <p>Saldo após resgate: <span id="saldo-apos"></span> moedas</p>
+                <div class="button-group">
+                    <button id="confirmar-resgate" class="btn-primary">Confirmar</button>
+                    <button id="cancelar-resgate" class="btn-secondary">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Cupom -->
+        <div id="modal-cupom" class="modal">
+            <div class="modal-content">
+                <h2>Resgate Concluído!</h2>
+                <div id="cupom-detalhes">
+                    <p>Seu cupom: <span id="cupom-codigo" class="cupom"></span></p>
+                    <p>Apresente este cupom na empresa parceira para resgatar sua vantagem.</p>
+                </div>
+                <button id="fechar-cupom" class="btn-primary">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/resgate-vantagem.js"></script>
+</body>
+</html> 

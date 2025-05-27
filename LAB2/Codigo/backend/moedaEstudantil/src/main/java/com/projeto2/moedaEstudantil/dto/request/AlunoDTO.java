@@ -1,16 +1,22 @@
-package com.projeto2.moedaEstudantil.dto;
+package com.projeto2.moedaEstudantil.dto.request;
 
 
+import com.projeto2.moedaEstudantil.validation.CpfValido;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Min;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
-public class CadastroAlunoDTO {
-    
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class AlunoDTO {
     @NotBlank(message = "O nome é obrigatório")
     private String nome;
 
@@ -22,7 +28,7 @@ public class CadastroAlunoDTO {
     private String senha;
 
     @NotBlank(message = "O CPF é obrigatório")
-    @com.projeto2.moedaEstudantil.validation.CpfValido(message = "CPF inválido")
+    @CpfValido
     private String cpf;
 
     @NotBlank(message = "O RG é obrigatório")
@@ -52,4 +58,4 @@ public class CadastroAlunoDTO {
     @NotNull(message = "O ID do curso é obrigatório")
     @Min(value = 1, message = "O ID do curso deve ser maior que 0")
     private Integer cursoId;
-} 
+}

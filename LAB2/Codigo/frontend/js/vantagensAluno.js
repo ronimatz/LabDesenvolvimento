@@ -1,13 +1,10 @@
 // Elementos do DOM
 const vantagensGrid = document.getElementById('vantagens-grid');
-const modal = document.getElementById('modal-confirmacao');
-const modalFoto = document.getElementById('modal-foto');
-const modalNome = document.getElementById('modal-nome');
-const modalPreco = document.getElementById('modal-preco');
-const modalSaldoAtual = document.getElementById('modal-saldo-atual');
-const modalSaldoApos = document.getElementById('modal-saldo-apos');
-const confirmarBtn = document.getElementById('confirmar-btn');
-const cancelarBtn = document.getElementById('cancelar-btn');
+const modal = document.getElementById('confirmModal');
+const vantagemNomeModal = document.getElementById('vantagemNomeModal');
+const vantagemEmpresaModal = document.getElementById('vantagemEmpresaModal');
+const vantagemValorModal = document.getElementById('vantagemValorModal');
+const saldoAposModal = document.getElementById('saldoAposModal');
 const saldoMoedasElement = document.getElementById('saldoMoedas');
 
 let alunoSaldo = 0;
@@ -64,13 +61,16 @@ async function carregarVantagens() {
 // Renderizar vantagens na grid
 function renderizarVantagens(vantagens) {
     vantagensGrid.innerHTML = vantagens.map(vantagem => `
-        <div class="vantagem-card" onclick="abrirModal(${JSON.stringify(vantagem).replace(/"/g, '&quot;')})">
+        <div class="vantagem-card">
             <img src="data:image/jpeg;base64,${vantagem.fotoProduto}" alt="${vantagem.descricao}">
             <div class="vantagem-info">
                 <h3>${vantagem.descricao}</h3>
                 <p>Valor: ${vantagem.valor} moedas</p>
                 <p>Empresa: ${vantagem.empresaNome}</p>
-                <button>Resgatar</button>
+                <button class="comprar-btn" onclick="abrirModal(${JSON.stringify(vantagem).replace(/"/g, '&quot;')})">
+                    <span class="cart-icon">🛒</span>
+                    Resgatar
+                </button>
             </div>
         </div>
     `).join('');
@@ -79,11 +79,10 @@ function renderizarVantagens(vantagens) {
 // Abrir modal de confirmação
 function abrirModal(vantagem) {
     vantagemSelecionada = vantagem;
-    modalFoto.src = `data:image/jpeg;base64,${vantagem.fotoProduto}`;
-    modalNome.textContent = vantagem.descricao;
-    modalPreco.textContent = `${vantagem.valor} moedas`;
-    modalSaldoAtual.textContent = `${alunoSaldo} moedas`;
-    modalSaldoApos.textContent = `${alunoSaldo - vantagem.valor} moedas`;
+    vantagemNomeModal.textContent = vantagem.descricao;
+    vantagemEmpresaModal.textContent = vantagem.empresaNome;
+    vantagemValorModal.textContent = `${vantagem.valor} moedas`;
+    saldoAposModal.textContent = `${alunoSaldo - vantagem.valor} moedas`;
     modal.style.display = 'block';
 }
 
@@ -93,8 +92,8 @@ function fecharModal() {
     vantagemSelecionada = null;
 }
 
-// Confirmar resgate
-async function confirmarResgate() {
+// Confirmar compra
+async function confirmarCompra() {
     if (!vantagemSelecionada) return;
 
     try {
@@ -122,10 +121,6 @@ async function confirmarResgate() {
         alert(error.message || 'Erro ao resgatar vantagem');
     }
 }
-
-// Event listeners
-cancelarBtn.addEventListener('click', fecharModal);
-confirmarBtn.addEventListener('click', confirmarResgate);
 
 // Fechar modal quando clicar fora
 window.addEventListener('click', (event) => {

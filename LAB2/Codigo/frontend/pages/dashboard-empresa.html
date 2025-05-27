@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Empresa</title>
+    <link rel="stylesheet" href="../css/vantagem.css">
+    <style>
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #b91c1c;
+        }
+
+        .welcome-message {
+            color: #6366f1;
+            margin: 30px 0;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .menu-button {
+            padding: 8px 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+            width: 250px;
+            text-align: center;
+            text-decoration: none;
+            color: #000;
+        }
+
+        .menu-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .footer a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Dashboard Empresa</h1>
+            <div class="header-actions">
+                <button id="logoutBtn" class="logout-btn">Sair</button>
+            </div>
+        </div>
+
+        <div class="welcome-message" id="welcomeMessage">
+            Olá, empresa!
+        </div>
+
+        <div class="menu-buttons">
+            <a href="cadastro-vantagem.html" class="menu-button">Cadastrar Nova Vantagem</a>
+            <a href="vantagens-empresa.html" class="menu-button">Minhas Vantagens Cadastradas</a>
+            <a href="vantagens-compradas-empresa.html" class="menu-button">Vantagens Compradas</a>
+        </div>
+
+        <div class="footer">
+            <span>Copyright © Todos os direitos reservados. Desenvolvido por Projeto de Software</span>
+            <div>
+                <a href="#">Política de Privacidade</a> |
+                <a href="#">Política de Vagas</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080';
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Adiciona evento de logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userRole');
+                window.location.href = 'login.html';
+            });
+
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE_URL}/empresas-parceiras/info`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar informações da empresa');
+                }
+
+                const empresaData = await response.json();
+                document.getElementById('welcomeMessage').textContent = `Olá, ${empresaData.nome}!`;
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao carregar dados. Por favor, tente novamente.');
+            }
+        });
+    </script>
+</body>
+</html> 

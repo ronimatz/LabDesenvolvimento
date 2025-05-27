@@ -8,19 +8,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.projeto2.moedaEstudantil.dto.AlunoDTO;
 import com.projeto2.moedaEstudantil.dto.response.AlunoInfoDTO;
 import com.projeto2.moedaEstudantil.dto.response.AlunoResponseDTO;
+import com.projeto2.moedaEstudantil.dto.response.VantagemResgateDTO;
+import com.projeto2.moedaEstudantil.dto.response.TransacaoRecebimentoDTO;
+import com.projeto2.moedaEstudantil.dto.response.VantagemResgatadaDTO;
 import com.projeto2.moedaEstudantil.model.Aluno;
-import com.projeto2.moedaEstudantil.model.Curso;
-import com.projeto2.moedaEstudantil.model.Departamento;
-import com.projeto2.moedaEstudantil.model.Extrato;
-import com.projeto2.moedaEstudantil.model.InstituicaoEnsino;
+import com.projeto2.moedaEstudantil.model.Transacao;
+import com.projeto2.moedaEstudantil.model.TipoTransacao;
 import com.projeto2.moedaEstudantil.model.Vantagem;
 import com.projeto2.moedaEstudantil.repositories.AlunoRepository;
-import com.projeto2.moedaEstudantil.repositories.CursoRepository;
-import com.projeto2.moedaEstudantil.repositories.InstituicaoEnsinoRepository;
+import com.projeto2.moedaEstudantil.repositories.TransacaoRepository;
 import com.projeto2.moedaEstudantil.repositories.VantagemRepository;
+import com.projeto2.moedaEstudantil.model.Professor;
 
 @Service
 public class AlunoService {
@@ -29,111 +29,29 @@ public class AlunoService {
     private AlunoRepository alunoRepository;
 
     @Autowired
-    private CursoRepository cursoRepository;
-
-    @Autowired
-    private InstituicaoEnsinoRepository instituicaoRepository;
-
-    @Autowired
     private VantagemRepository vantagemRepository;
 
-    public AlunoResponseDTO criarAluno(AlunoDTO dto) {
-    if (alunoRepository.existsByCpf(dto.getCpf())) {
-        throw new IllegalArgumentException("CPF já cadastrado");
+    @Autowired
+    private TransacaoRepository transacaoRepository;
+
+    public List<AlunoResponseDTO> listarAlunos() {
+        List<Aluno> alunos = alunoRepository.findAll();
+        return alunos.stream()
+                .map(this::toAlunoResponseDTO)
+                .collect(Collectors.toList());
     }
 
-    if (alunoRepository.existsByRg(dto.getRg())) {
-        throw new IllegalArgumentException("RG já cadastrado");
-    }
-
-    InstituicaoEnsino instituicao = instituicaoRepository.findById(dto.getInstituicaoId())
-            .orElseThrow(() -> new IllegalArgumentException("Instituição não encontrada"));
-
-    Curso curso = cursoRepository.findById(dto.getCursoId())
-            .orElseThrow(() -> new IllegalArgumentException("Curso não encontrado"));
-
-    Departamento departamento = curso.getDepartamento();
-    if (departamento == null || departamento.getInstituicaoEnsino() == null) {
-        throw new IllegalArgumentException("Curso não está associado a uma instituição válida");
-    }
-
-    if (!departamento.getInstituicaoEnsino().getId().equals(instituicao.getId())) {
-        throw new IllegalArgumentException("Curso não pertence à instituição informada");
-    }
-
-    Aluno aluno = new Aluno(
-            dto.getEmail(),
-            dto.getSenha(),
-            dto.getNome(),
-            dto.getCpf(),
-            dto.getRg(),
-            dto.getEndereco(),
-            instituicao,
-            curso
-    );
-
-    Extrato extrato = new Extrato();
-    extrato.setUsuario(aluno);
-    extrato.setSaldoMoedas(0);
-    aluno.setExtrato(extrato);
-
-    aluno = alunoRepository.save(aluno);
-
-    return mapToResponseDTO(aluno);
-}
-    public List<AlunoResponseDTO> listarTodos() {
-        return alunoRepository.findAll().stream().map(this::mapToResponseDTO).collect(Collectors.toList());
-    }
-
-    public AlunoResponseDTO buscarPorId(Integer id) {
-        Aluno aluno = alunoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado"));
-        return mapToResponseDTO(aluno);
-    }
-
-    public void deletarAluno(Integer id) {
-        if (!alunoRepository.existsById(id)) {
-            throw new IllegalArgumentException("Aluno não encontrado");
-        }
-        alunoRepository.deleteById(id);
-    }
-
-    public AlunoResponseDTO editarAluno(Integer id, AlunoDTO dto) {
-        Aluno aluno = alunoRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado"));
-    
-        
-        if (!aluno.getCpf().equals(dto.getCpf()) && alunoRepository.existsByCpf(dto.getCpf())) {
-            throw new IllegalArgumentException("CPF já cadastrado");
-        }
-    
-        if (!aluno.getRg().equals(dto.getRg()) && alunoRepository.existsByRg(dto.getRg())) {
-            throw new IllegalArgumentException("RG já cadastrado");
-        }
-    
-        
-        aluno.setEmail(dto.getEmail());
-        aluno.setSenha(dto.getSenha());
-        aluno.setNome(dto.getNome());
-        aluno.setCpf(dto.getCpf());
-        aluno.setRg(dto.getRg());
-        aluno.setEndereco(dto.getEndereco());
-    
-        aluno = alunoRepository.save(aluno);
-    
-        return mapToResponseDTO(aluno);
-    }
-    
-    private AlunoResponseDTO mapToResponseDTO(Aluno aluno) {
-        return new AlunoResponseDTO(
-                aluno.getId().intValue(),
-                aluno.getNome(),
-                aluno.getCpf(),
-                aluno.getEmail(),
-                aluno.getRg(),
-                aluno.getEndereco(),
-                aluno.getCurso().getNome(),
-                aluno.getInstituicaoEnsino().getNome());
+    private AlunoResponseDTO toAlunoResponseDTO(Aluno aluno) {
+        AlunoResponseDTO dto = new AlunoResponseDTO();
+        dto.setId(aluno.getId());
+        dto.setNome(aluno.getNome());
+        dto.setCpf(aluno.getCpf());
+        dto.setEmail(aluno.getEmail());
+        dto.setRg(aluno.getRg());
+        dto.setEndereco(aluno.getEndereco());
+        dto.setCurso(aluno.getCurso().getNome());
+        dto.setInstituicao(aluno.getInstituicaoEnsino().getNome());
+        return dto;
     }
 
     public AlunoInfoDTO getAlunoInfo(Authentication authentication) {
@@ -153,7 +71,7 @@ public class AlunoService {
     }
 
     @Transactional
-    public void resgatarVantagem(Integer vantagemId, Authentication authentication) {
+    public VantagemResgateDTO resgatarVantagem(Integer vantagemId, Authentication authentication) {
         String email = authentication.getName();
         Aluno aluno = alunoRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
@@ -165,9 +83,76 @@ public class AlunoService {
             throw new RuntimeException("Saldo insuficiente para resgatar esta vantagem");
         }
 
+        // Cria a transação de resgate
+        Transacao transacao = Transacao.criarTransacaoVantagem(
+            aluno, 
+            vantagem.getEmpresaParceiraResponsavel(), 
+            vantagem, 
+            vantagem.getValor()
+        );
+        transacaoRepository.save(transacao);
+
+        // Atualiza o saldo do aluno
         aluno.setSaldoMoedas(aluno.getSaldoMoedas() - vantagem.getValor());
         aluno.getVantagensAdquiridas().add(vantagem);
-        
         alunoRepository.save(aluno);
+
+        // Retorna os dados do resgate
+        return new VantagemResgateDTO(
+            vantagem.getDescricao(),
+            vantagem.getValor(),
+            vantagem.getDesconto(),
+            vantagem.getEmpresaParceiraResponsavel().getNome(),
+            transacao.getCupomGerado(),
+            aluno.getSaldoMoedas()
+        );
+    }
+
+    public List<VantagemResgatadaDTO> listarVantagensResgatadas(Authentication authentication) {
+        String email = authentication.getName();
+        Aluno aluno = alunoRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        
+        List<Transacao> transacoes = transacaoRepository.findByOrigemAndTipoOrderByDataDesc(aluno, TipoTransacao.RESGATE_VANTAGEM);
+        
+        return transacoes.stream()
+                .map(this::toVantagemResgatadaDTO)
+                .collect(Collectors.toList());
+    }
+
+    private VantagemResgatadaDTO toVantagemResgatadaDTO(Transacao transacao) {
+        VantagemResgatadaDTO dto = new VantagemResgatadaDTO();
+        dto.setId(transacao.getId());
+        Vantagem vantagem = transacao.getVantagem();
+        dto.setVantagemDescricao(vantagem.getDescricao());
+        dto.setEmpresaNome(vantagem.getEmpresaParceiraResponsavel().getNome());
+        dto.setValor(transacao.getValor());
+        dto.setData(transacao.getData());
+        dto.setCupomGerado(transacao.getCupomGerado());
+        dto.setImagemUrl(null);
+        return dto;
+    }
+
+    public List<TransacaoRecebimentoDTO> listarRecebimentos(Authentication authentication) {
+        String email = authentication.getName();
+        Aluno aluno = alunoRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+        
+        List<Transacao> transacoes = transacaoRepository.findByDestinoAndTipoOrderByDataDesc(aluno, TipoTransacao.ENVIO_MOEDAS);
+        
+        return transacoes.stream()
+                .map(this::toTransacaoRecebimentoDTO)
+                .collect(Collectors.toList());
+    }
+
+    private TransacaoRecebimentoDTO toTransacaoRecebimentoDTO(Transacao transacao) {
+        TransacaoRecebimentoDTO dto = new TransacaoRecebimentoDTO();
+        dto.setId(transacao.getId());
+        Professor professor = (Professor) transacao.getOrigem();
+        dto.setProfessorNome(professor.getNome());
+        dto.setData(transacao.getData());
+        dto.setMotivo(transacao.getMotivo());
+        dto.setValor(transacao.getValor());
+        return dto;
     }
 }

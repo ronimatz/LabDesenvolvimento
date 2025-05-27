@@ -52,7 +52,7 @@ function adicionarVantagem() {
     };
   
     try {
-      const response = await fetch('http://localhost:8080/empresas-parceiras', {
+      const response = await fetch('http://localhost:8080/empresas-parceiras/cadastro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(empresa)

@@ -1,7 +1,8 @@
 package com.projeto2.moedaEstudantil.services;
 
-import com.projeto2.moedaEstudantil.dto.LoginDTO;
-import com.projeto2.moedaEstudantil.dto.CadastroAlunoDTO;
+import com.projeto2.moedaEstudantil.dto.request.AlunoDTO;
+import com.projeto2.moedaEstudantil.dto.request.LoginDTO;
+import com.projeto2.moedaEstudantil.dto.response.LoginResponseDTO;
 import com.projeto2.moedaEstudantil.model.Aluno;
 import com.projeto2.moedaEstudantil.model.Curso;
 import com.projeto2.moedaEstudantil.model.Endereco;
@@ -18,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.projeto2.moedaEstudantil.dto.LoginResponseDTO;
 import com.projeto2.moedaEstudantil.model.Admin;
 import com.projeto2.moedaEstudantil.model.Professor;
 import com.projeto2.moedaEstudantil.model.Usuario;
@@ -36,7 +36,7 @@ public class AuthService {
     private final CursoRepository cursoRepository;
 
 
-    public void cadastrarAluno(CadastroAlunoDTO cadastroDTO) {
+    public void cadastrarAluno(AlunoDTO cadastroDTO) {
         if (usuarioRepository.findByEmail(cadastroDTO.getEmail()).isPresent()) {
             throw new RuntimeException("Email já cadastrado");
         }

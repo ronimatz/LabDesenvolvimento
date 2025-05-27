@@ -5,9 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import com.projeto2.moedaEstudantil.dto.CadastroProfessorDTO;
-import com.projeto2.moedaEstudantil.dto.DepartamentoDTO;
-import com.projeto2.moedaEstudantil.dto.InstituicaoDTO;
+import com.projeto2.moedaEstudantil.dto.request.CadastroCursoDTO;
+import com.projeto2.moedaEstudantil.dto.request.CadastroProfessorDTO;
+import com.projeto2.moedaEstudantil.dto.request.DepartamentoDTO;
+import com.projeto2.moedaEstudantil.dto.request.InstituicaoDTO;
 import com.projeto2.moedaEstudantil.dto.response.InstituicaoListDTO;
 import com.projeto2.moedaEstudantil.dto.response.DepartamentoListDTO;
 import com.projeto2.moedaEstudantil.model.Departamento;
@@ -15,9 +16,8 @@ import com.projeto2.moedaEstudantil.model.InstituicaoEnsino;
 import com.projeto2.moedaEstudantil.model.Professor;
 import com.projeto2.moedaEstudantil.services.AdminService;
 import com.projeto2.moedaEstudantil.services.CursoService;
-import com.projeto2.moedaEstudantil.model.Curso;
-import com.projeto2.moedaEstudantil.dto.CadastroCursoDTO;
 import com.projeto2.moedaEstudantil.dto.response.CursoListDTO;
+import com.projeto2.moedaEstudantil.dto.response.CursoResponseDTO;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -64,8 +64,8 @@ public class AdminController {
     }
 
     @PostMapping("/cursos")
-    public ResponseEntity<Curso> cadastrarCurso(@Valid @RequestBody CadastroCursoDTO dto) {
-        Curso curso = cursoService.cadastrarCurso(dto);
+    public ResponseEntity<CursoResponseDTO> cadastrarCurso(@Valid @RequestBody CadastroCursoDTO dto) {
+        CursoResponseDTO curso = cursoService.cadastrarCurso(dto);
         return ResponseEntity.ok(curso);
     }
 
@@ -73,5 +73,11 @@ public class AdminController {
     public ResponseEntity<List<CursoListDTO>> listarCursosPorInstituicao(@PathVariable Integer instituicaoId) {
         List<CursoListDTO> cursos = cursoService.listarCursosPorInstituicao(instituicaoId);
         return ResponseEntity.ok(cursos);
+    }
+
+    @PostMapping("/distribuir-moedas")
+    public ResponseEntity<String> distribuirMoedasParaProfessores() {
+        adminService.distribuirMoedasParaProfessores();
+        return ResponseEntity.ok("Moedas distribuídas com sucesso para todos os professores");
     }
 } 

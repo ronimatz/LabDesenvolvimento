@@ -7,7 +7,7 @@ public class AlunoInfoDTO {
     private Integer id;
     private String nome;
     private String email;
-    private Integer saldoMoedas;
+    private Double saldoMoedas;
     private String curso;
     private String instituicao;
 } 

@@ -5,24 +5,39 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.projeto2.moedaEstudantil.dto.CadastroProfessorDTO;
-import com.projeto2.moedaEstudantil.dto.DepartamentoDTO;
-import com.projeto2.moedaEstudantil.dto.InstituicaoDTO;
+import com.projeto2.moedaEstudantil.dto.request.AlunoDTO;
+import com.projeto2.moedaEstudantil.dto.request.CadastroProfessorDTO;
+import com.projeto2.moedaEstudantil.dto.request.DepartamentoDTO;
+import com.projeto2.moedaEstudantil.dto.request.InstituicaoDTO;
 import com.projeto2.moedaEstudantil.dto.response.InstituicaoListDTO;
 import com.projeto2.moedaEstudantil.dto.response.DepartamentoListDTO;
+import com.projeto2.moedaEstudantil.model.Aluno;
+import com.projeto2.moedaEstudantil.model.Curso;
 import com.projeto2.moedaEstudantil.model.Departamento;
+import com.projeto2.moedaEstudantil.model.Endereco;
 import com.projeto2.moedaEstudantil.model.InstituicaoEnsino;
 import com.projeto2.moedaEstudantil.model.Professor;
+import com.projeto2.moedaEstudantil.model.TipoTransacao;
+import com.projeto2.moedaEstudantil.model.Transacao;
+
 import com.projeto2.moedaEstudantil.model.enums.Role;
+import com.projeto2.moedaEstudantil.repositories.CursoRepository;
 import com.projeto2.moedaEstudantil.repositories.DepartamentoRepository;
 import com.projeto2.moedaEstudantil.repositories.InstituicaoEnsinoRepository;
 import com.projeto2.moedaEstudantil.repositories.ProfessorRepository;
-
+import com.projeto2.moedaEstudantil.repositories.TransacaoRepository;
+import com.projeto2.moedaEstudantil.repositories.UsuarioRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class AdminService {
+
+    @Autowired
+    private CursoRepository cursoRepository;
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private InstituicaoEnsinoRepository instituicaoRepository;
@@ -34,7 +49,43 @@ public class AdminService {
     private ProfessorRepository professorRepository;
 
     @Autowired
+    private TransacaoRepository transacaoRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    public void cadastrarAluno(AlunoDTO cadastroDTO) {
+        if (usuarioRepository.findByEmail(cadastroDTO.getEmail()).isPresent()) {
+            throw new RuntimeException("Email já cadastrado");
+        }
+
+        InstituicaoEnsino instituicao = instituicaoRepository.findById(cadastroDTO.getInstituicaoId())
+            .orElseThrow(() -> new RuntimeException("Instituição de ensino não encontrada"));
+
+        Curso curso = cursoRepository.findById(cadastroDTO.getCursoId())
+            .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+
+        Endereco endereco = new Endereco();
+        endereco.setRua(cadastroDTO.getRua());
+        endereco.setNumero(cadastroDTO.getNumero());
+        endereco.setComplemento(cadastroDTO.getComplemento());
+        endereco.setBairro(cadastroDTO.getBairro());
+        endereco.setCidade(cadastroDTO.getCidade());
+        endereco.setEstado(cadastroDTO.getEstado());
+
+        Aluno aluno = new Aluno();
+        aluno.setEmail(cadastroDTO.getEmail());
+        aluno.setSenha(passwordEncoder.encode(cadastroDTO.getSenha()));
+        aluno.setRole(Role.ALUNO);
+        aluno.setNome(cadastroDTO.getNome());
+        aluno.setCpf(cadastroDTO.getCpf());
+        aluno.setRg(cadastroDTO.getRg());
+        aluno.setEndereco(endereco);
+        aluno.setInstituicaoEnsino(instituicao);
+        aluno.setCurso(curso);
+
+        usuarioRepository.save(aluno);
+    }
 
     @Transactional
     public InstituicaoEnsino cadastrarInstituicao(InstituicaoDTO dto) {
@@ -140,5 +191,28 @@ public class AdminService {
         dto.setId(departamento.getId());
         dto.setNome(departamento.getNome());
         return dto;
+    }
+
+    @Transactional
+    public void distribuirMoedasParaProfessores() {
+        List<Professor> professores = professorRepository.findAll();
+        
+        for (Professor professor : professores) {
+            // Cria uma transação do tipo DISTRIBUICAO_MOEDAS
+            Transacao transacao = new Transacao(
+                null, // origem é null pois é o sistema
+                professor, // destino é o professor
+                100.0, // valor fixo de 100 moedas
+                "Distribuição mensal de moedas", // motivo
+                TipoTransacao.DISTRIBUICAO_MOEDAS // tipo
+            );
+            
+            // Atualiza o saldo do professor
+            professor.setSaldoMoedas(professor.getSaldoMoedas() + 100);
+            
+            // Salva as alterações
+            professorRepository.save(professor);
+            transacaoRepository.save(transacao);
+        }
     }
 } 

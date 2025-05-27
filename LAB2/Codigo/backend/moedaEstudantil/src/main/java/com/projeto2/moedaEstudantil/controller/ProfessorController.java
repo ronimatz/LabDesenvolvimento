@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import com.projeto2.moedaEstudantil.dto.EnvioMoedasDTO;
+import com.projeto2.moedaEstudantil.dto.request.EnvioMoedasDTO;
 import com.projeto2.moedaEstudantil.dto.response.ProfessorInfoDTO;
 import com.projeto2.moedaEstudantil.dto.response.TransacaoHistoricoDTO;
 import com.projeto2.moedaEstudantil.services.ProfessorService;

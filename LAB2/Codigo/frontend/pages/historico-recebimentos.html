@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Recebimento</title>
+    <link rel="stylesheet" href="../css/vantagem.css">
+    <style>
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .title {
+            color: #6366f1;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .welcome-message {
+            color: #6366f1;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .table-container {
+            margin: 20px 0;
+            border: 1px solid #ccc;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 8px;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: normal;
+        }
+
+        .voltar-button {
+            display: inline-block;
+            padding: 5px 15px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #000;
+            margin-top: 20px;
+        }
+
+        .voltar-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .footer a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">HISTÓRICO DE RECEBIMENTO</div>
+        
+        <div class="welcome-message" id="welcomeMessage">
+            Olá, aluno!
+        </div>
+
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Professor</th>
+                        <th>Data</th>
+                        <th>Motivo</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody id="recebimentos-body">
+                    <!-- Dados serão inseridos aqui dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <a href="dashboard-aluno.html" class="voltar-button">Voltar</a>
+
+        <div class="footer">
+            <span>Copyright © Todos os direitos reservados. Desenvolvido por Projeto de Software</span>
+            <div>
+                <a href="#">Política de Privacidade</a> |
+                <a href="#">Política de Vagas</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080'; // URL base da API
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Fetch student info
+                const infoResponse = await fetch(`${API_BASE_URL}/alunos/info`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (infoResponse.status === 401) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (!infoResponse.ok) {
+                    throw new Error('Erro ao buscar informações do aluno');
+                }
+
+                const alunoData = await infoResponse.json();
+                document.getElementById('welcomeMessage').textContent = `Olá, aluno ${alunoData.nome}!`;
+
+                // Fetch transactions
+                const response = await fetch(`${API_BASE_URL}/alunos/historico-recebimentos`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar histórico de recebimentos');
+                }
+
+                const transacoes = await response.json();
+                
+                const tbody = document.getElementById('recebimentos-body');
+                if (transacoes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Nenhum recebimento encontrado</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = transacoes.map(transacao => {
+                    const data = new Date(transacao.data);
+                    const dataFormatada = data.toLocaleDateString('pt-BR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                    });
+
+                    return `
+                        <tr>
+                            <td>${transacao.professorNome}</td>
+                            <td>${dataFormatada}</td>
+                            <td>${transacao.motivo || 'Não especificado'}</td>
+                            <td>${transacao.valor} moedas</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao carregar dados. Por favor, tente novamente.');
+            }
+        });
+    </script>
+</body>
+</html> 

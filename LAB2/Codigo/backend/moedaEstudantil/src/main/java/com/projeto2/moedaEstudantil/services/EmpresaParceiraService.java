@@ -3,19 +3,26 @@ package com.projeto2.moedaEstudantil.services;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.projeto2.moedaEstudantil.dto.EmpresaParceiraDTO;
-import com.projeto2.moedaEstudantil.dto.VantagemDTO;
-import com.projeto2.moedaEstudantil.dto.request.EmpresaParceiraRequestDTO;
+import com.projeto2.moedaEstudantil.dto.request.EmpresaParceiraDTO;
+
+import com.projeto2.moedaEstudantil.dto.response.VantagemDTO;
+import com.projeto2.moedaEstudantil.dto.response.VantagemResgatadaDTO;
 import com.projeto2.moedaEstudantil.model.EmpresaParceira;
 import com.projeto2.moedaEstudantil.model.Vantagem;
+import com.projeto2.moedaEstudantil.model.Transacao;
+import com.projeto2.moedaEstudantil.model.TipoTransacao;
+import com.projeto2.moedaEstudantil.model.Aluno;
+import com.projeto2.moedaEstudantil.model.enums.Role;
 import com.projeto2.moedaEstudantil.repositories.EmpresaParceiraRepository;
 import com.projeto2.moedaEstudantil.repositories.VantagemRepository;
+import com.projeto2.moedaEstudantil.repositories.TransacaoRepository;
 
 @Service
 public class EmpresaParceiraService {
@@ -29,13 +36,16 @@ public class EmpresaParceiraService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private TransacaoRepository transacaoRepository;
+
     @Transactional
     public EmpresaParceira cadastrarEmpresa(EmpresaParceiraDTO dto) {
         if (empresaParceiraRepository.findByNome(dto.getNome()).isPresent()) {
             throw new RuntimeException("Empresa com o nome '" + dto.getNome() + "' já cadastrada.");
         }
 
-        EmpresaParceira empresa = new EmpresaParceira(dto.getEmail(), dto.getSenha(), dto.getNome(), dto.getCnpj());
+        EmpresaParceira empresa = new EmpresaParceira(dto.getEmail(), passwordEncoder.encode(dto.getSenha()), dto.getNome(), dto.getCnpj());
 
         if (empresa.getVantagens() == null) {
             empresa.setVantagens(new ArrayList<>());
@@ -87,7 +97,7 @@ public class EmpresaParceiraService {
         }
 
         empresa.setEmail(dto.getEmail());
-        empresa.setSenha(dto.getSenha()); // Considere a criptografia da senha aqui
+        empresa.setSenha(passwordEncoder.encode(dto.getSenha()));
         empresa.setNome(dto.getNome());
         empresa.setCnpj(dto.getCnpj());
 
@@ -158,7 +168,7 @@ public class EmpresaParceiraService {
         empresaParceiraRepository.deleteById(id);
     }
 
-    public void cadastrarEmpresaParceira(EmpresaParceiraRequestDTO dto) {
+    public void cadastrarEmpresaParceira(EmpresaParceiraDTO dto) {
         if (empresaParceiraRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Email já cadastrado");
         }
@@ -171,11 +181,46 @@ public class EmpresaParceiraService {
         empresaParceira.setEmail(dto.getEmail());
         empresaParceira.setSenha(passwordEncoder.encode(dto.getSenha()));
         empresaParceira.setCnpj(dto.getCnpj());
-        empresaParceira.setNome(dto.getNomeFantasia());
-        empresaParceira.setDescricao(dto.getDescricao());
-        empresaParceira.setEndereco(dto.getEndereco());
-        empresaParceira.setTelefone(dto.getTelefone());
+        empresaParceira.setNome(dto.getNome());
+        empresaParceira.setRole(Role.EMPRESA_PARCEIRA);
 
         empresaParceiraRepository.save(empresaParceira);
+    }
+
+    public EmpresaParceira buscarPorEmail(String email) {
+        return empresaParceiraRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Empresa não encontrada com o email: " + email));
+    }
+
+    public List<VantagemResgatadaDTO> listarVantagensCompradas(Integer empresaId) {
+        EmpresaParceira empresa = buscarPorId(empresaId);
+        
+        List<Transacao> transacoes = transacaoRepository.findByDestinoAndTipoOrderByDataDesc(empresa, TipoTransacao.RESGATE_VANTAGEM);
+        
+        return transacoes.stream()
+                .map(this::toVantagemResgatadaDTO)
+                .collect(Collectors.toList());
+    }
+
+    private VantagemResgatadaDTO toVantagemResgatadaDTO(Transacao transacao) {
+        VantagemResgatadaDTO dto = new VantagemResgatadaDTO();
+        dto.setId(transacao.getId());
+        Vantagem vantagem = transacao.getVantagem();
+        dto.setVantagemDescricao(vantagem.getDescricao());
+        dto.setEmpresaNome(vantagem.getEmpresaParceiraResponsavel().getNome());
+        dto.setValor(transacao.getValor());
+        dto.setData(transacao.getData());
+        dto.setCupomGerado(transacao.getCupomGerado());
+        
+        // Adiciona o nome do aluno que comprou a vantagem
+        Aluno aluno = (Aluno) transacao.getOrigem();
+        dto.setAlunoNome(aluno.getNome());
+        
+        // Adiciona a URL da imagem se disponível
+        if (vantagem.getFotoProduto() != null) {
+            dto.setImagemUrl("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(vantagem.getFotoProduto()));
+        }
+        
+        return dto;
     }
 }

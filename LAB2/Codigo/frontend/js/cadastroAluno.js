@@ -1,14 +1,25 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = 'login.html';
-        return;
-    }
+   
 
     await loadInstituicoes();
     document.getElementById('instituicaoSelect').addEventListener('change', loadCursos);
     document.getElementById('alunoForm').addEventListener('submit', handleSubmit);
+    
+    // Adiciona máscara ao CPF
+    const cpfInput = document.getElementById('cpf');
+    cpfInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value.length <= 11) {
+            value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+            e.target.value = value;
+        }
+    });
 });
+
+// Função para limpar o CPF (remover pontos e traço)
+function cleanCPF(cpf) {
+    return cpf.replace(/\D/g, '');
+}
 
 async function loadInstituicoes() {
     try {
@@ -69,7 +80,7 @@ async function handleSubmit(e) {
         nome: document.getElementById('nome').value,
         email: document.getElementById('email').value,
         senha: document.getElementById('senha').value,
-        cpf: document.getElementById('cpf').value,
+        cpf: cleanCPF(document.getElementById('cpf').value),
         rg: document.getElementById('rg').value,
         rua: document.getElementById('rua').value,
         bairro: document.getElementById('bairro').value,
@@ -90,14 +101,14 @@ async function handleSubmit(e) {
             body: JSON.stringify(aluno)
         });
   
-        const data = await response.json();
-  
-        if (response.ok) {
-            document.getElementById('mensagem').innerText = "Aluno cadastrado com sucesso!";
-            document.getElementById('alunoForm').reset();
-        } else {
-            document.getElementById('mensagem').innerText = data.message || "Erro ao cadastrar aluno.";
+        if (!response.ok) {
+            const data = await response.json();
+            document.getElementById('mensagem').innerText = data.error || "Erro ao cadastrar aluno.";
+            return;
         }
+
+        document.getElementById('mensagem').innerText = "Aluno cadastrado com sucesso!";
+        document.getElementById('alunoForm').reset();
     } catch (error) {
         document.getElementById('mensagem').innerText = "Erro na requisição.";
         console.error(error);

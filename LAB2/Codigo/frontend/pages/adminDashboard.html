@@ -5,8 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Administrativo</title>
     <link rel="stylesheet" href="../css/adminDashboard.css">
+    <style>
+        .distribute-coins-btn {
+            position: fixed;
+            top: 20px;
+            right: 120px; /* Posicionado à esquerda do botão de logout */
+            padding: 10px 20px;
+            background-color: #22c55e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .distribute-coins-btn:hover {
+            background-color: #16a34a;
+        }
+
+        .icon {
+            font-size: 1.2em;
+        }
+    </style>
 </head>
 <body>
+    <button id="logoutBtn" class="logout-btn">Sair</button>
+    <button class="distribute-coins-btn" onclick="distribuirMoedas()">
+        <span class="icon">💰</span>
+        Distribuir Moedas
+    </button>
     <div class="container">
         <h1>PAINEL ADMINISTRATIVO</h1>
         
@@ -86,6 +117,9 @@
                 </div>
                 <div class="form-group">
                     <input type="text" id="nomeCurso" placeholder="Nome do Curso" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" id="cargaHorariaCurso" placeholder="Carga Horária" required min="1">
                 </div>
                 <button type="submit" class="submit-btn">Cadastrar Curso</button>
             </form>
