@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Aluno</title>
+    <link rel="stylesheet" href="../css/dashboardAluno.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Dashboard Aluno</h1>
+            <div class="saldo-container">
+                <span>Saldo: </span>
+                <span id="saldoMoedas">0</span>
+            </div>
+        </div>
+
+        <div class="welcome-message">
+            <p id="welcomeMessage">Olá, aluno!</p>
+        </div>
+
+        <div class="actions">
+            <button onclick="window.location.href='vantagensDisponiveis.html'" class="action-button">Ver Vantagens disponíveis</button>
+            <button onclick="window.location.href='vantagensAdquiridas.html'" class="action-button">Ver Vantagens adquiridas</button>
+            <button onclick="window.location.href='historicoRecebimento.html'" class="action-button">Histórico de recebimento de moedas</button>
+        </div>
+    </div>
+    <script src="../js/dashboardAluno.js"></script>
+</body>
+</html> 
