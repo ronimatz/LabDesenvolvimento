@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.projeto2.moedaEstudantil.dto.response.VantagemDTO;
+import com.projeto2.moedaEstudantil.dto.request.VantagemRequestDTO;
 import com.projeto2.moedaEstudantil.dto.response.VantagemResgatadaDTO;
 import com.projeto2.moedaEstudantil.model.EmpresaParceira;
 import com.projeto2.moedaEstudantil.model.Vantagem;
 import com.projeto2.moedaEstudantil.services.EmpresaParceiraService;
 import com.projeto2.moedaEstudantil.dto.request.EmpresaParceiraDTO;
-
 
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
@@ -78,7 +78,7 @@ public class EmpresaParceiraController {
     }
 
     @PostMapping("/{empresaId}/vantagens")
-    public ResponseEntity<?> adicionarVantagem(@PathVariable Integer empresaId, @RequestBody VantagemDTO vantagemDTO) {
+    public ResponseEntity<?> adicionarVantagem(@PathVariable Integer empresaId, @Valid @RequestBody VantagemRequestDTO vantagemDTO) {
         try {
             Vantagem novaVantagem = empresaParceiraService.adicionarVantagem(empresaId, vantagemDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(novaVantagem);
@@ -88,7 +88,7 @@ public class EmpresaParceiraController {
     }
 
     @PutMapping("/vantagens/{vantagemId}")
-    public ResponseEntity<?> editarVantagem(@PathVariable Integer vantagemId, @RequestBody VantagemDTO vantagemDTO) {
+    public ResponseEntity<?> editarVantagem(@PathVariable Integer vantagemId, @Valid @RequestBody VantagemRequestDTO vantagemDTO) {
         try {
             Vantagem vantagemAtualizada = empresaParceiraService.editarVantagem(vantagemId, vantagemDTO);
             return ResponseEntity.ok(vantagemAtualizada);

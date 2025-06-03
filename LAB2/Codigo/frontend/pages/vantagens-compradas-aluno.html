@@ -49,6 +49,22 @@
             height: 50px;
             object-fit: cover;
             border-radius: 4px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .vantagem-imagem.placeholder {
+            background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+        }
+
+        .vantagem-imagem.placeholder::before {
+            content: "📷";
+            font-size: 16px;
         }
 
         .cupom {
@@ -129,6 +145,14 @@
     <script>
         const API_BASE_URL = 'http://localhost:8080';
 
+        // Função para lidar com erro de imagem
+        function handleImageError(img) {
+            img.style.display = 'none';
+            const placeholder = document.createElement('div');
+            placeholder.className = 'vantagem-imagem placeholder';
+            img.parentNode.appendChild(placeholder);
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const token = localStorage.getItem('token');
@@ -161,15 +185,20 @@
                     return;
                 }
 
-                tbody.innerHTML = vantagens.map(vantagem => {
+                tbody.innerHTML = vantagens.map((vantagem, index) => {
                     const data = new Date(vantagem.data).toLocaleDateString('pt-BR');
+                    const imageId = `img-${index}`;
                     return `
                         <tr>
                             <td>
-                                <img src="${vantagem.imagemUrl}" 
-                                     alt="Foto da vantagem" 
-                                     class="vantagem-imagem"
-                                     onerror="this.src='../assets/no-image.png'">
+                                ${vantagem.imagemUrl ? 
+                                    `<img id="${imageId}" src="${vantagem.imagemUrl}" 
+                                         alt="Foto da vantagem" 
+                                         class="vantagem-imagem"
+                                         onload="this.style.display='block'"
+                                         onerror="handleImageError(this)">` 
+                                    : '<div class="vantagem-imagem placeholder"></div>'
+                                }
                             </td>
                             <td>${vantagem.vantagemDescricao}</td>
                             <td>${vantagem.empresaNome}</td>

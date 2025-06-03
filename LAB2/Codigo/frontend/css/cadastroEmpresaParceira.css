@@ -177,3 +177,23 @@ button:hover {
 .login-link a:hover {
   text-decoration: underline;
 }
+
+.mensagem {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.mensagem.erro {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.mensagem.sucesso {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}

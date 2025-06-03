@@ -63,6 +63,10 @@
             margin-top: 5px;
         }
 
+        .form-group small.required {
+            color: #c62828;
+        }
+
         .button-group {
             display: flex;
             justify-content: flex-end;
@@ -111,6 +115,27 @@
             display: none;
             margin-top: 10px;
         }
+
+        .mensagem {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 14px;
+            display: none;
+        }
+
+        .mensagem.erro {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .mensagem.sucesso {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
     </style>
 </head>
 <body>
@@ -121,18 +146,18 @@
             <div class="form-container">
                 <div class="form-fields">
                     <div class="form-group">
-                        <input type="text" id="nome" name="nome" placeholder="Nome - Sidney Sores" required>
-                        <small>*Preencha com o nome completo da vantagem oferecida</small>
+                        <input type="text" id="nome" name="nome" placeholder="Nome da vantagem">
+                        <small class="required">* Preencha com o nome completo da vantagem oferecida</small>
                     </div>
 
                     <div class="form-group">
-                        <input type="text" id="descricao" name="descricao" placeholder="Descrição - 15% de desconto" required>
-                        <small>*Seja o mais claro possível ao descrever suas vantagens</small>
+                        <input type="text" id="descricao" name="descricao" placeholder="Descrição do desconto">
+                        <small class="required">* Seja o mais claro possível ao descrever suas vantagens</small>
                     </div>
 
                     <div class="form-group">
-                        <input type="number" id="custo" name="custo" placeholder="Custo - 1.000 moedas" required>
-                        <small>*Indique um valor acessível para que todos os alunos possam participar</small>
+                        <input type="number" id="custo" name="custo" placeholder="Custo em moedas" step="0.01">
+                        <small class="required">* Indique um valor acessível para que todos os alunos possam participar</small>
                     </div>
                 </div>
 
@@ -140,6 +165,7 @@
                     <div id="upload-text">
                         Arraste um arquivo aqui, ou<br>
                         <span style="color: #6366f1; cursor: pointer;" onclick="document.getElementById('file-input').click()">selecione um arquivo</span> para carregar
+                        <small class="required" style="display: block; margin-top: 10px;">* A foto da vantagem é obrigatória</small>
                     </div>
                     <input type="file" id="file-input" accept="image/*" style="display: none">
                     <img id="preview-image" src="#" alt="Preview">
@@ -151,6 +177,8 @@
                 <button type="submit" class="button button-submit">Cadastrar</button>
             </div>
         </form>
+
+        <div id="mensagem" class="mensagem"></div>
 
         <div class="footer">
             <span>Copyright © Todos os direitos reservados. Desenvolvido por Projeto de Software</span>
@@ -167,9 +195,21 @@
         const fileInput = document.getElementById('file-input');
         const previewImage = document.getElementById('preview-image');
         const uploadText = document.getElementById('upload-text');
+        const mensagemElement = document.getElementById('mensagem');
         let selectedFile = null;
 
-        // Previne o comportamento padrão de drag and drop do navegador
+        function exibirMensagem(texto, tipo) {
+            mensagemElement.textContent = texto;
+            mensagemElement.className = `mensagem ${tipo}`;
+            mensagemElement.style.display = 'block';
+        }
+
+        function limparMensagem() {
+            mensagemElement.textContent = '';
+            mensagemElement.className = 'mensagem';
+            mensagemElement.style.display = 'none';
+        }
+
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, preventDefaults, false);
             document.body.addEventListener(eventName, preventDefaults, false);
@@ -180,7 +220,6 @@
             e.stopPropagation();
         }
 
-        // Highlight drop zone quando item é arrastado sobre
         ['dragenter', 'dragover'].forEach(eventName => {
             dropZone.addEventListener(eventName, highlight, false);
         });
@@ -197,7 +236,6 @@
             dropZone.style.border = '2px dashed #ccc';
         }
 
-        // Handle dropped files
         dropZone.addEventListener('drop', handleDrop, false);
 
         function handleDrop(e) {
@@ -225,7 +263,13 @@
 
         document.getElementById('vantagem-form').addEventListener('submit', async function(e) {
             e.preventDefault();
+            limparMensagem();
             
+            if (!selectedFile) {
+                exibirMensagem('A foto da vantagem é obrigatória', 'erro');
+                return;
+            }
+
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
@@ -233,15 +277,6 @@
                     return;
                 }
 
-                const formData = new FormData();
-                formData.append('nome', document.getElementById('nome').value);
-                formData.append('descricao', document.getElementById('descricao').value);
-                formData.append('valor', document.getElementById('custo').value);
-                if (selectedFile) {
-                    formData.append('imagem', selectedFile);
-                }
-
-                // Primeiro, buscar as informações da empresa para obter o ID
                 const infoResponse = await fetch(`${API_BASE_URL}/empresas-parceiras/info`, {
                     method: 'GET',
                     headers: {
@@ -255,11 +290,10 @@
 
                 const empresaInfo = await infoResponse.json();
                 
-                // Criar o objeto de vantagem no formato que o backend espera
                 const vantagemData = {
                     descricao: document.getElementById('nome').value,
                     valor: parseFloat(document.getElementById('custo').value),
-                    desconto: document.getElementById('descricao').value
+                    desconto: parseFloat(document.getElementById('descricao').value)
                 };
 
                 if (selectedFile) {
@@ -267,8 +301,7 @@
                     reader.readAsDataURL(selectedFile);
                     await new Promise((resolve, reject) => {
                         reader.onload = () => {
-                            // Remove o prefixo "data:image/...;base64," da string base64
-                            vantagemData.fotoProduto = reader.result.split(',')[1];
+                            vantagemData.fotoVantagem = reader.result.split(',')[1];
                             resolve();
                         };
                         reader.onerror = reject;
@@ -284,15 +317,33 @@
                     body: JSON.stringify(vantagemData)
                 });
 
-                if (!response.ok) {
-                    throw new Error('Erro ao cadastrar vantagem');
+                const data = await response.text();
+                
+                if (response.ok) {
+                    exibirMensagem('Vantagem cadastrada com sucesso!', 'sucesso');
+                    setTimeout(() => {
+                        window.location.href = 'vantagens-empresa.html';
+                    }, 2000);
+                } else {
+                    try {
+                        const errorObj = JSON.parse(data);
+                        if (errorObj.errors) {
+                            const errorMessages = errorObj.errors
+                                .map(error => error.defaultMessage || error.message)
+                                .join('\n');
+                            exibirMensagem(errorMessages, 'erro');
+                        } else if (errorObj.message) {
+                            exibirMensagem(errorObj.message, 'erro');
+                        } else {
+                            exibirMensagem(JSON.stringify(errorObj), 'erro');
+                        }
+                    } catch (e) {
+                        exibirMensagem(data, 'erro');
+                    }
                 }
-
-                alert('Vantagem cadastrada com sucesso!');
-                window.location.href = 'vantagens-empresa.html';
             } catch (error) {
                 console.error('Erro:', error);
-                alert('Erro ao cadastrar vantagem. Por favor, tente novamente.');
+                exibirMensagem('Erro na conexão com o servidor.', 'erro');
             }
         });
     </script>

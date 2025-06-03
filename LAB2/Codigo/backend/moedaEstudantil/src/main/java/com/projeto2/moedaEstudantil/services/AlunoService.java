@@ -1,5 +1,6 @@
 package com.projeto2.moedaEstudantil.services;
 
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -129,7 +130,14 @@ public class AlunoService {
         dto.setValor(transacao.getValor());
         dto.setData(transacao.getData());
         dto.setCupomGerado(transacao.getCupomGerado());
-        dto.setImagemUrl(null);
+        
+        // Converte a foto da vantagem para data URL base64
+        if (vantagem.getFotoProduto() != null) {
+            dto.setImagemUrl("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(vantagem.getFotoProduto()));
+        } else {
+            dto.setImagemUrl(null);
+        }
+        
         return dto;
     }
 

@@ -3,6 +3,7 @@ package com.projeto2.moedaEstudantil.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.projeto2.moedaEstudantil.dto.request.InstituicaoDTO;
 import com.projeto2.moedaEstudantil.model.Departamento;
 import com.projeto2.moedaEstudantil.model.InstituicaoEnsino;
 import com.projeto2.moedaEstudantil.model.Professor;
@@ -13,6 +14,22 @@ public class InstituicaoEnsinoService {
     
     @Autowired
     private InstituicaoEnsinoRepository repository;
+
+    public InstituicaoEnsino save(InstituicaoDTO dto) {
+        if (repository.findByNome(dto.getNome()).isPresent()) {
+            throw new RuntimeException("Instituição Ensino já cadastrada");
+        }
+
+        if (repository.existsByCnpj(dto.getCnpj())) {
+            throw new RuntimeException("CNPJ já cadastrado");
+        }
+
+        InstituicaoEnsino instituicaoEnsino = new InstituicaoEnsino();
+        instituicaoEnsino.setNome(dto.getNome());
+        instituicaoEnsino.setCnpj(dto.getCnpj());
+
+        return repository.save(instituicaoEnsino);
+    }
 
     public InstituicaoEnsino save(InstituicaoEnsino instituicaoEnsino) {
         instituicaoEnsino.setId(null);
@@ -48,10 +65,4 @@ public class InstituicaoEnsinoService {
         return repository.findById(id)
             .orElseThrow(() -> new RuntimeException("Instituição Ensino nao encontrada"));
     }
-
-
-
-
-
-
 }

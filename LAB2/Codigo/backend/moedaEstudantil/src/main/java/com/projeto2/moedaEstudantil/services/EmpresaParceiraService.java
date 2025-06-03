@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.projeto2.moedaEstudantil.dto.request.EmpresaParceiraDTO;
-
+import com.projeto2.moedaEstudantil.dto.request.VantagemRequestDTO;
 import com.projeto2.moedaEstudantil.dto.response.VantagemDTO;
 import com.projeto2.moedaEstudantil.dto.response.VantagemResgatadaDTO;
 import com.projeto2.moedaEstudantil.model.EmpresaParceira;
@@ -105,7 +105,7 @@ public class EmpresaParceiraService {
     }
 
     @Transactional
-    public Vantagem adicionarVantagem(Integer empresaId, VantagemDTO vantagemDTO) {
+    public Vantagem adicionarVantagem(Integer empresaId, VantagemRequestDTO vantagemDTO) {
         EmpresaParceira empresa = buscarPorId(empresaId);
 
         boolean descricaoJaExiste = empresa.getVantagens().stream()
@@ -121,8 +121,8 @@ public class EmpresaParceiraService {
         novaVantagem.setValor(vantagemDTO.getValor());
         novaVantagem.setDesconto(vantagemDTO.getDesconto());
 
-        if (vantagemDTO.getFotoProduto() != null && !vantagemDTO.getFotoProduto().isEmpty()) {
-            byte[] fotoBytes = Base64.getDecoder().decode(vantagemDTO.getFotoProduto());
+        if (vantagemDTO.getFotoVantagem() != null && !vantagemDTO.getFotoVantagem().isEmpty()) {
+            byte[] fotoBytes = Base64.getDecoder().decode(vantagemDTO.getFotoVantagem());
             novaVantagem.setFotoProduto(fotoBytes);
         }
 
@@ -133,7 +133,7 @@ public class EmpresaParceiraService {
     }
 
     @Transactional
-    public Vantagem editarVantagem(Integer vantagemId, VantagemDTO vantagemDTO) {
+    public Vantagem editarVantagem(Integer vantagemId, VantagemRequestDTO vantagemDTO) {
         Vantagem vantagem = vantagemRepository.findById(vantagemId)
                 .orElseThrow(() -> new RuntimeException("Vantagem não encontrada com o ID: " + vantagemId));
 
@@ -141,10 +141,10 @@ public class EmpresaParceiraService {
         vantagem.setValor(vantagemDTO.getValor());
         vantagem.setDesconto(vantagemDTO.getDesconto());
 
-        if (vantagemDTO.getFotoProduto() != null && !vantagemDTO.getFotoProduto().isEmpty()) {
-            byte[] fotoBytes = Base64.getDecoder().decode(vantagemDTO.getFotoProduto());
+        if (vantagemDTO.getFotoVantagem() != null && !vantagemDTO.getFotoVantagem().isEmpty()) {
+            byte[] fotoBytes = Base64.getDecoder().decode(vantagemDTO.getFotoVantagem());
             vantagem.setFotoProduto(fotoBytes);
-        } else if (vantagemDTO.getFotoProduto() == null) {
+        } else if (vantagemDTO.getFotoVantagem() == null) {
             vantagem.setFotoProduto(null); // Permite remover a foto
         }
 

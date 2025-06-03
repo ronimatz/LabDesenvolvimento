@@ -28,6 +28,35 @@ h1 {
     margin-bottom: 2rem;
 }
 
+.mensagem {
+    margin: 20px auto;
+    padding: 12px;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+    max-width: 100%;
+    display: none;
+    white-space: pre-line;
+}
+
+.mensagem.erro {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+
+.mensagem.sucesso {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.mensagem.info {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+}
+
 .form-group {
     margin-bottom: 1.5rem;
 }

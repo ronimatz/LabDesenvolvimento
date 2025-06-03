@@ -9,8 +9,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Verifica se o usuário é admin
     if (userRole !== 'ADMIN') {
-        alert('Acesso não autorizado');
-        window.location.href = 'login.html';
+        exibirMensagem('Acesso não autorizado', 'erro');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
         return;
     }
 
@@ -37,6 +39,28 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('cursoForm').addEventListener('submit', handleCursoSubmit);
 });
 
+// Função para exibir mensagens estilizadas
+function exibirMensagem(texto, tipo) {
+    const mensagemElement = document.getElementById('mensagem');
+    mensagemElement.textContent = texto;
+    mensagemElement.className = `mensagem ${tipo}`;
+    mensagemElement.style.display = 'block';
+    
+    // Auto-ocultar mensagens de sucesso após 3 segundos
+    if (tipo === 'sucesso') {
+        setTimeout(() => {
+            limparMensagem();
+        }, 3000);
+    }
+}
+
+function limparMensagem() {
+    const mensagemElement = document.getElementById('mensagem');
+    mensagemElement.textContent = '';
+    mensagemElement.className = 'mensagem';
+    mensagemElement.style.display = 'none';
+}
+
 async function loadInstituicoes() {
     try {
         const response = await fetch('http://localhost:8080/admin/instituicoes', {
@@ -52,7 +76,7 @@ async function loadInstituicoes() {
         updateInstituicoesList(instituicoes);
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao carregar instituições');
+        exibirMensagem('Erro ao carregar instituições', 'erro');
     }
 }
 
@@ -75,38 +99,26 @@ function updateInstituicoesSelects(instituicoes) {
 function updateInstituicoesList(instituicoes) {
     const container = document.getElementById('instituicoesList');
     container.innerHTML = '';
-
+    
     instituicoes.forEach(instituicao => {
         const instituicaoDiv = document.createElement('div');
         instituicaoDiv.className = 'instituicao-item';
-        
-        let html = `
-            <div class="instituicao-nome">${instituicao.nome}</div>
-            <div class="departamentos-list">
-        `;
-
-        if (instituicao.departamentos && instituicao.departamentos.length > 0) {
-            instituicao.departamentos.forEach(departamento => {
-                html += `
+        instituicaoDiv.innerHTML = `
+            <h3>${instituicao.nome}</h3>
+            <p>CNPJ: ${instituicao.cnpj}</p>
+            <div class="departamentos">
+                ${instituicao.departamentos ? instituicao.departamentos.map(dep => `
                     <div class="departamento-item">
-                        ${departamento.nome}
-                        <div class="professores-list">
-                `;
-
-                if (departamento.professores && departamento.professores.length > 0) {
-                    departamento.professores.forEach(professor => {
-                        html += `<div class="professor-item">${professor.nome}</div>`;
-                    });
-                }
-
-                html += `</div></div>`;
-            });
-        } else {
-            html += '<div class="departamento-item">Nenhum departamento cadastrado</div>';
-        }
-
-        html += '</div>';
-        instituicaoDiv.innerHTML = html;
+                        <h4>${dep.nome}</h4>
+                        <div class="professores">
+                            ${dep.professores ? dep.professores.map(prof => `
+                                <span class="professor-item">${prof.nome}</span>
+                            `).join('') : ''}
+                        </div>
+                    </div>
+                `).join('') : '<p>Nenhum departamento cadastrado</p>'}
+            </div>
+        `;
         container.appendChild(instituicaoDiv);
     });
 }
@@ -114,7 +126,6 @@ function updateInstituicoesList(instituicoes) {
 async function loadDepartamentos() {
     const instituicaoId = document.getElementById('instituicaoProfessorSelect').value;
     const departamentoSelect = document.getElementById('departamentoSelect');
-    
     departamentoSelect.innerHTML = '<option value="">Selecione o Departamento</option>';
     
     if (!instituicaoId) return;
@@ -137,12 +148,13 @@ async function loadDepartamentos() {
         });
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao carregar departamentos');
+        exibirMensagem('Erro ao carregar departamentos', 'erro');
     }
 }
 
 async function handleInstituicaoSubmit(e) {
     e.preventDefault();
+    limparMensagem();
     
     const instituicaoData = {
         nome: document.getElementById('nomeInstituicao').value,
@@ -159,19 +171,38 @@ async function handleInstituicaoSubmit(e) {
             body: JSON.stringify(instituicaoData)
         });
 
-        if (!response.ok) throw new Error('Falha ao cadastrar instituição');
+        if (!response.ok) {
+            const errorData = await response.text();
+            try {
+                const errorObj = JSON.parse(errorData);
+                if (errorObj.errors) {
+                    const errorMessages = errorObj.errors
+                        .map(error => error.defaultMessage || error.message)
+                        .join('\n');
+                    exibirMensagem(errorMessages, 'erro');
+                } else if (errorObj.message) {
+                    exibirMensagem(errorObj.message, 'erro');
+                } else {
+                    exibirMensagem('Falha ao cadastrar instituição', 'erro');
+                }
+            } catch (e) {
+                exibirMensagem(errorData, 'erro');
+            }
+            return;
+        }
 
-        alert('Instituição cadastrada com sucesso!');
+        exibirMensagem('Instituição cadastrada com sucesso!', 'sucesso');
         e.target.reset();
         await loadInstituicoes();
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao cadastrar instituição');
+        exibirMensagem('Erro ao cadastrar instituição', 'erro');
     }
 }
 
 async function handleDepartamentoSubmit(e) {
     e.preventDefault();
+    limparMensagem();
     
     const departamentoData = {
         nome: document.getElementById('nomeDepartamento').value,
@@ -188,24 +219,42 @@ async function handleDepartamentoSubmit(e) {
             body: JSON.stringify(departamentoData)
         });
 
-        if (!response.ok) throw new Error('Falha ao cadastrar departamento');
+        if (!response.ok) {
+            const errorData = await response.text();
+            try {
+                const errorObj = JSON.parse(errorData);
+                if (errorObj.errors) {
+                    const errorMessages = errorObj.errors
+                        .map(error => error.defaultMessage || error.message)
+                        .join('\n');
+                    exibirMensagem(errorMessages, 'erro');
+                } else if (errorObj.message) {
+                    exibirMensagem(errorObj.message, 'erro');
+                } else {
+                    exibirMensagem('Falha ao cadastrar departamento', 'erro');
+                }
+            } catch (e) {
+                exibirMensagem(errorData, 'erro');
+            }
+            return;
+        }
 
-        alert('Departamento cadastrado com sucesso!');
+        exibirMensagem('Departamento cadastrado com sucesso!', 'sucesso');
         e.target.reset();
         await loadInstituicoes();
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao cadastrar departamento');
+        exibirMensagem('Erro ao cadastrar departamento', 'erro');
     }
 }
 
 function formatCPF(cpf) {
-    // Remove all non-numeric characters
     return cpf.replace(/[^\d]/g, '');
 }
 
 async function handleProfessorSubmit(e) {
     e.preventDefault();
+    limparMensagem();
     
     const professorData = {
         nome: document.getElementById('nomeProfessor').value,
@@ -227,20 +276,34 @@ async function handleProfessorSubmit(e) {
         });
 
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Falha ao cadastrar professor');
+            const errorData = await response.text();
+            try {
+                const errorObj = JSON.parse(errorData);
+                if (errorObj.errors) {
+                    const errorMessages = errorObj.errors
+                        .map(error => error.defaultMessage || error.message)
+                        .join('\n');
+                    exibirMensagem(errorMessages, 'erro');
+                } else if (errorObj.message) {
+                    exibirMensagem(errorObj.message, 'erro');
+                } else {
+                    exibirMensagem('Falha ao cadastrar professor', 'erro');
+                }
+            } catch (e) {
+                exibirMensagem(errorData, 'erro');
+            }
+            return;
         }
 
-        alert('Professor cadastrado com sucesso!');
+        exibirMensagem('Professor cadastrado com sucesso!', 'sucesso');
         e.target.reset();
         await loadInstituicoes();
     } catch (error) {
         console.error('Erro:', error);
-        alert(error.message || 'Erro ao cadastrar professor');
+        exibirMensagem('Erro ao cadastrar professor', 'erro');
     }
 }
 
-// Carregar departamentos para o formulário de curso
 async function loadDepartamentosCurso() {
     const instituicaoId = document.getElementById('instituicaoCursoSelect').value;
     const departamentoSelect = document.getElementById('departamentoCursoSelect');
@@ -266,13 +329,13 @@ async function loadDepartamentosCurso() {
         });
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao carregar departamentos');
+        exibirMensagem('Erro ao carregar departamentos', 'erro');
     }
 }
 
-// Cadastrar novo curso
 async function handleCursoSubmit(e) {
     e.preventDefault();
+    limparMensagem();
 
     const cursoData = {
         nome: document.getElementById('nomeCurso').value,
@@ -291,19 +354,37 @@ async function handleCursoSubmit(e) {
         });
 
         if (!response.ok) {
-            throw new Error('Falha ao cadastrar curso');
+            const errorData = await response.text();
+            try {
+                const errorObj = JSON.parse(errorData);
+                if (errorObj.errors) {
+                    const errorMessages = errorObj.errors
+                        .map(error => error.defaultMessage || error.message)
+                        .join('\n');
+                    exibirMensagem(errorMessages, 'erro');
+                } else if (errorObj.message) {
+                    exibirMensagem(errorObj.message, 'erro');
+                } else {
+                    exibirMensagem('Falha ao cadastrar curso', 'erro');
+                }
+            } catch (e) {
+                exibirMensagem(errorData, 'erro');
+            }
+            return;
         }
 
-        alert('Curso cadastrado com sucesso!');
+        exibirMensagem('Curso cadastrado com sucesso!', 'sucesso');
         document.getElementById('cursoForm').reset();
-        await loadInstituicoes(); // Recarrega a lista de instituições para mostrar o novo curso
+        await loadInstituicoes();
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao cadastrar curso: ' + error.message);
+        exibirMensagem('Erro ao cadastrar curso', 'erro');
     }
 }
 
 async function distribuirMoedas() {
+    limparMensagem();
+    
     try {
         const token = localStorage.getItem('token');
         const response = await fetch('http://localhost:8080/admin/distribuir-moedas', {
@@ -317,9 +398,9 @@ async function distribuirMoedas() {
             throw new Error('Erro ao distribuir moedas');
         }
 
-        alert('Moedas distribuídas com sucesso para todos os professores!');
+        exibirMensagem('Moedas distribuídas com sucesso para todos os professores!', 'sucesso');
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao distribuir moedas. Por favor, tente novamente.');
+        exibirMensagem('Erro ao distribuir moedas. Por favor, tente novamente.', 'erro');
     }
 } 
