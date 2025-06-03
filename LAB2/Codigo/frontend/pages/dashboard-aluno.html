@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Aluno</title>
+    <link rel="stylesheet" href="../css/vantagem.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .saldo-button {
+            padding: 10px 20px;
+            background-color: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .saldo-button:hover {
+            background-color: #4f46e5;
+        }
+
+        .logout-btn {
+            background-color: #dc2626;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background-color: #b91c1c;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+        }
+
+        .welcome-message {
+            color: #6366f1;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2em;
+        }
+
+        .saldo {
+            color: #6366f1;
+            font-size: 1.2em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .menu-button {
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .menu-button:hover {
+            background-color: #f8f9fa;
+            border-color: #6366f1;
+            color: #6366f1;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .footer a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            right: 10px;
+            top: 5px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .saldo-valor {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #6366f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Dashboard Aluno</h1>
+            <div class="header-actions">
+                <button class="saldo-button" onclick="showSaldo()">Saldo</button>
+                <button id="logoutBtn" class="logout-btn">Sair</button>
+            </div>
+        </div>
+
+        <div class="welcome-message" id="welcomeMessage">
+            Olá, aluno!
+        </div>
+
+        <div class="saldo" id="saldoAluno">
+            Saldo: -- moedas
+        </div>
+
+        <div class="menu-buttons">
+            <a href="vantagens-aluno.html" class="menu-button">Resgatar Vantagens</a>
+            <a href="vantagens-compradas-aluno.html" class="menu-button">Vantagens Adquiridas</a>
+            <a href="historico-recebimentos.html" class="menu-button">Histórico de Recebimento de Moedas</a>
+        </div>
+
+        <div class="footer">
+            <span>Copyright © Todos os direitos reservados. Desenvolvido por Projeto de Software</span>
+            <div>
+                <a href="#">Política de Privacidade</a> |
+                <a href="#">Política de Vagas</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal do Saldo -->
+    <div id="saldoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSaldo()">&times;</span>
+            <h2>Seu Saldo</h2>
+            <div class="saldo-valor" id="saldoValor">-</div>
+            <div>moedas</div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Adiciona evento de logout
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('userRole');
+                window.location.href = 'login.html';
+            });
+
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE_URL}/alunos/info`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar informações do aluno');
+                }
+
+                const alunoData = await response.json();
+                document.getElementById('welcomeMessage').textContent = `Olá, ${alunoData.nome}!`;
+                document.getElementById('saldoAluno').textContent = `Saldo: ${alunoData.saldoMoedas} moedas`;
+                document.getElementById('saldoValor').textContent = alunoData.saldoMoedas;
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao carregar dados do aluno');
+            }
+        });
+
+        function showSaldo() {
+            document.getElementById('saldoModal').style.display = 'block';
+        }
+
+        function closeSaldo() {
+            document.getElementById('saldoModal').style.display = 'none';
+        }
+
+        // Fecha o modal se clicar fora dele
+        window.onclick = function(event) {
+            const modal = document.getElementById('saldoModal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html> 

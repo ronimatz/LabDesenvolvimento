@@ -1,14 +1,36 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = 'login.html';
-        return;
-    }
-
     await loadInstituicoes();
     document.getElementById('instituicaoSelect').addEventListener('change', loadCursos);
     document.getElementById('alunoForm').addEventListener('submit', handleSubmit);
 });
+
+// Função para exibir mensagem
+function exibirMensagem(texto, tipo = 'erro') {
+    const mensagemDiv = document.getElementById('mensagem');
+    mensagemDiv.textContent = texto;
+    mensagemDiv.className = `mensagem ${tipo}`;
+    mensagemDiv.style.display = 'block';
+    
+    // Auto-hide para mensagens de sucesso
+    if (tipo === 'sucesso') {
+        setTimeout(() => {
+            limparMensagem();
+        }, 3000);
+    }
+}
+
+// Função para limpar mensagem
+function limparMensagem() {
+    const mensagemDiv = document.getElementById('mensagem');
+    mensagemDiv.style.display = 'none';
+    mensagemDiv.textContent = '';
+    mensagemDiv.className = 'mensagem';
+}
+
+// Função para limpar o CPF (remover pontos e traço)
+function cleanCPF(cpf) {
+    return cpf.replace(/\D/g, '');
+}
 
 async function loadInstituicoes() {
     try {
@@ -30,7 +52,7 @@ async function loadInstituicoes() {
         });
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao carregar instituições');
+        exibirMensagem('Erro ao carregar instituições');
     }
 }
 
@@ -58,27 +80,28 @@ async function loadCursos() {
         });
     } catch (error) {
         console.error('Erro:', error);
-        alert('Erro ao carregar cursos');
+        exibirMensagem('Erro ao carregar cursos');
     }
 }
 
 async function handleSubmit(e) {
     e.preventDefault();
+    limparMensagem();
   
     const aluno = {
         nome: document.getElementById('nome').value,
         email: document.getElementById('email').value,
         senha: document.getElementById('senha').value,
-        cpf: document.getElementById('cpf').value,
+        cpf: cleanCPF(document.getElementById('cpf').value),
         rg: document.getElementById('rg').value,
         rua: document.getElementById('rua').value,
         bairro: document.getElementById('bairro').value,
-        numero: parseInt(document.getElementById('numero').value),
+        numero: parseInt(document.getElementById('numero').value) || null,
         complemento: document.getElementById('complemento').value,
         cidade: document.getElementById('cidade').value,
         estado: document.getElementById('uf').value,
-        instituicaoId: parseInt(document.getElementById('instituicaoSelect').value),
-        cursoId: parseInt(document.getElementById('cursoSelect').value)
+        instituicaoId: parseInt(document.getElementById('instituicaoSelect').value) || null,
+        cursoId: parseInt(document.getElementById('cursoSelect').value) || null
     };
   
     try {
@@ -90,16 +113,49 @@ async function handleSubmit(e) {
             body: JSON.stringify(aluno)
         });
   
-        const data = await response.json();
-  
-        if (response.ok) {
-            document.getElementById('mensagem').innerText = "Aluno cadastrado com sucesso!";
-            document.getElementById('alunoForm').reset();
-        } else {
-            document.getElementById('mensagem').innerText = data.message || "Erro ao cadastrar aluno.";
+        if (!response.ok) {
+            const data = await response.text();
+            try {
+                const errorObj = JSON.parse(data);
+                
+                if (typeof errorObj === 'object' && errorObj !== null) {
+                    // Se for um objeto de erros de validação (campo: mensagem)
+                    if (Object.keys(errorObj).some(key => typeof errorObj[key] === 'string')) {
+                        const errorMessages = Object.values(errorObj).join('\n');
+                        exibirMensagem(errorMessages);
+                    }
+                    // Se houver uma propriedade 'error' ou 'message'
+                    else if (errorObj.error) {
+                        exibirMensagem(errorObj.error);
+                    } else if (errorObj.message) {
+                        exibirMensagem(errorObj.message);
+                    }
+                    // Se for um array de erros
+                    else if (Array.isArray(errorObj)) {
+                        const errorMessages = errorObj.map(error => error.message || error.defaultMessage || error).join('\n');
+                        exibirMensagem(errorMessages);
+                    } else {
+                        exibirMensagem('Erro ao processar dados');
+                    }
+                } else {
+                    exibirMensagem(errorObj.toString());
+                }
+            } catch (e) {
+                // Se não for JSON válido, mostra o texto do erro diretamente
+                exibirMensagem(data || 'Erro desconhecido');
+            }
+            return;
         }
+
+        const result = await response.json();
+        exibirMensagem("Aluno cadastrado com sucesso!", 'sucesso');
+        document.getElementById('alunoForm').reset();
+        
+        // Limpar os selects
+        document.getElementById('cursoSelect').innerHTML = '<option value="">Selecione o Curso</option>';
+        
     } catch (error) {
-        document.getElementById('mensagem').innerText = "Erro na requisição.";
-        console.error(error);
+        console.error('Erro:', error);
+        exibirMensagem("Erro na conexão com o servidor");
     }
 }

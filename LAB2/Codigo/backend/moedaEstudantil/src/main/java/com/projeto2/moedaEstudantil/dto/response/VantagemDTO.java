@@ -1,4 +1,4 @@
-package com.projeto2.moedaEstudantil.dto;
+package com.projeto2.moedaEstudantil.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,6 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VantagemDTO {
+    private Integer id;
     private String descricao;
     private Double valor;
     private Double desconto;

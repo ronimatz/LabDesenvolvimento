@@ -36,7 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = 'dashboardProfessor.html';
                     break;
                 case 'ALUNO':
-                    window.location.href = 'dashboardAluno.html';
+                    window.location.href = 'dashboard-aluno.html';
+                    break;
+                case 'EMPRESA_PARCEIRA':
+                    window.location.href = 'dashboard-empresa.html';
                     break;
                 default:
                     throw new Error('Tipo de usuário desconhecido');

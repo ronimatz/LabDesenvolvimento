@@ -1,7 +1,5 @@
 package com.projeto2.moedaEstudantil.controller;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.projeto2.moedaEstudantil.dto.request.InstituicaoDTO;
 import com.projeto2.moedaEstudantil.model.InstituicaoEnsino;
-
-
 import com.projeto2.moedaEstudantil.services.InstituicaoEnsinoService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/instituicao-ensino")
@@ -25,10 +23,9 @@ public class InstituicaoEnsinoController {
     @Autowired
     private InstituicaoEnsinoService service;
 
-
     @PostMapping
-    public ResponseEntity<InstituicaoEnsino> criarInstituicaoEnsino(@RequestBody InstituicaoEnsino instituicaoEnsino) {
-        InstituicaoEnsino instituicaoEnsinoCriada = service.save(instituicaoEnsino);
+    public ResponseEntity<InstituicaoEnsino> criarInstituicaoEnsino(@Valid @RequestBody InstituicaoDTO instituicaoDTO) {
+        InstituicaoEnsino instituicaoEnsinoCriada = service.save(instituicaoDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(instituicaoEnsinoCriada);
     }
 

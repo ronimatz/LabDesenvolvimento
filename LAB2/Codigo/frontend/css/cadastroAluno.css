@@ -48,11 +48,29 @@ form {
     gap: 15px;
 }
 
-input {
+input, select {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 14px;
+}
+
+select {
+    background-color: white;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 16px;
+    padding-right: 35px;
+}
+
+select:focus {
+    outline: none;
+    border-color: #007bff;
 }
 
 .document-row,
@@ -64,6 +82,15 @@ input {
 
 .document-row input,
 .address-row input {
+    flex: 1;
+}
+
+.institution-row {
+    display: flex;
+    gap: 15px;
+}
+
+.institution-row select {
     flex: 1;
 }
 
@@ -82,10 +109,33 @@ input {
     background-color: #0056b3;
 }
 
-#mensagem {
-    margin-top: 20px;
+.mensagem {
+    margin: 20px auto;
+    padding: 12px;
+    border-radius: 4px;
     text-align: center;
-    font-weight: bold;
+    font-size: 14px;
+    max-width: 600px;
+    display: none;
+    white-space: pre-line;
+}
+
+.mensagem.erro {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+
+.mensagem.sucesso {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.mensagem.info {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
 }
 
 .voltar-btn {
@@ -104,4 +154,19 @@ input {
 
 .voltar-btn:hover {
     background-color: #d0e2f0;
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.login-link a {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
 }

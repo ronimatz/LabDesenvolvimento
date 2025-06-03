@@ -5,14 +5,13 @@ import java.util.List;
 
 import com.projeto2.moedaEstudantil.validation.CpfValido;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,8 +47,6 @@ public class Aluno extends Usuario {
     @JoinColumn(name = "curso_id", nullable = false) 
     private Curso curso;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
-    private Extrato extrato;
 
     @OneToMany
     private List<Vantagem> vantagensAdquiridas;
@@ -59,7 +56,7 @@ public class Aluno extends Usuario {
     private Integer id;
 
     @Column(nullable = false)
-    private Integer saldoMoedas = 0; // Alunos começam com 0 moedas
+    private Double saldoMoedas = 0.0; // Alunos começam com 0 moedas
 
     public Aluno(String email, String senha, String nome, String cpf, String rg, Endereco endereco, InstituicaoEnsino instituicaoEnsino, Curso curso) {
         super(email, senha);

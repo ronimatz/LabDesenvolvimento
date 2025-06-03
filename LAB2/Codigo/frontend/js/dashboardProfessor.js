@@ -15,6 +15,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // Adiciona evento de logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userRole');
+        localStorage.removeItem('userName');
+        window.location.href = 'login.html';
+    });
+
     try {
         // Buscar informações do professor
         const response = await fetch('http://localhost:8080/professor/info', {

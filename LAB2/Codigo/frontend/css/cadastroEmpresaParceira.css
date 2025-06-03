@@ -162,3 +162,38 @@ button:hover {
 .voltar-btn:hover {
   background-color: #d0e2f0;
 }
+
+.login-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.login-link a {
+  color: #666;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.login-link a:hover {
+  text-decoration: underline;
+}
+
+.mensagem {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.mensagem.erro {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+}
+
+.mensagem.sucesso {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}

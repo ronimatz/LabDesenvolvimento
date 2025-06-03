@@ -1,4 +1,4 @@
-package com.projeto2.moedaEstudantil.dto;
+package com.projeto2.moedaEstudantil.dto.request;
 
 
 

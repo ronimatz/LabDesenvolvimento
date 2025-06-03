@@ -1,5 +1,6 @@
-package com.projeto2.moedaEstudantil.dto;
+package com.projeto2.moedaEstudantil.dto.request;
 
+import com.projeto2.moedaEstudantil.validation.CnpjValido;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
@@ -10,5 +11,6 @@ public class InstituicaoDTO {
     private String nome;
 
     @NotBlank(message = "O CNPJ é obrigatório")
+    @CnpjValido(message = "CNPJ inválido")
     private String cnpj;
 } 

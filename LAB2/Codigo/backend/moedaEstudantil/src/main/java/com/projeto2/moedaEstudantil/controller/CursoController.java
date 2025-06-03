@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.projeto2.moedaEstudantil.dto.CursoDTO;
+import com.projeto2.moedaEstudantil.dto.request.CadastroCursoDTO;
 import com.projeto2.moedaEstudantil.dto.response.CursoResponseDTO;
 import com.projeto2.moedaEstudantil.services.CursoService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/cursos")
@@ -26,8 +28,8 @@ public class CursoController {
     private CursoService cursoService;
 
     @PostMapping
-    public ResponseEntity<CursoResponseDTO> criarCurso(@RequestBody CursoDTO dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.addCurso(dto));
+    public ResponseEntity<CursoResponseDTO> criarCurso(@Valid @RequestBody CadastroCursoDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(cursoService.cadastrarCurso(dto));
     }
 
     @GetMapping
@@ -41,7 +43,7 @@ public class CursoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CursoResponseDTO> atualizar(@PathVariable Integer id, @RequestBody CursoDTO dto) {
+    public ResponseEntity<CursoResponseDTO> atualizar(@PathVariable Integer id, @Valid @RequestBody CadastroCursoDTO dto) {
         return ResponseEntity.ok(cursoService.updateCurso(id, dto));
     }
 

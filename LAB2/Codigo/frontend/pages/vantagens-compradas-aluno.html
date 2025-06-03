@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vantagens Resgatadas</title>
+    <link rel="stylesheet" href="../css/vantagem.css">
+    <style>
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .title {
+            color: #6366f1;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .table-container {
+            margin: 20px 0;
+            border: 1px solid #ccc;
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ccc;
+        }
+
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: normal;
+        }
+
+        .vantagem-imagem {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .vantagem-imagem.placeholder {
+            background-color: #e9ecef;
+            border: 1px solid #dee2e6;
+        }
+
+        .vantagem-imagem.placeholder::before {
+            content: "📷";
+            font-size: 16px;
+        }
+
+        .cupom {
+            font-family: monospace;
+            background-color: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .voltar-button {
+            display: inline-block;
+            padding: 8px 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #000;
+            margin-top: 20px;
+        }
+
+        .voltar-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .footer a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">MINHAS VANTAGENS RESGATADAS</div>
+        
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Nome</th>
+                        <th>Empresa</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+                        <th>Cupom</th>
+                    </tr>
+                </thead>
+                <tbody id="vantagens-body">
+                    <!-- Dados serão inseridos aqui dinamicamente -->
+                </tbody>
+            </table>
+        </div>
+
+        <a href="dashboard-aluno.html" class="voltar-button">Voltar</a>
+
+        <div class="footer">
+            <span>Copyright © Todos os direitos reservados. Desenvolvido por Projeto de Software</span>
+            <div>
+                <a href="#">Política de Privacidade</a> |
+                <a href="#">Política de Vagas</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080';
+
+        // Função para lidar com erro de imagem
+        function handleImageError(img) {
+            img.style.display = 'none';
+            const placeholder = document.createElement('div');
+            placeholder.className = 'vantagem-imagem placeholder';
+            img.parentNode.appendChild(placeholder);
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                const response = await fetch(`${API_BASE_URL}/alunos/vantagens-resgatadas`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.status === 401) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error('Erro ao buscar vantagens resgatadas');
+                }
+
+                const vantagens = await response.json();
+                const tbody = document.getElementById('vantagens-body');
+
+                if (vantagens.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Nenhuma vantagem resgatada</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = vantagens.map((vantagem, index) => {
+                    const data = new Date(vantagem.data).toLocaleDateString('pt-BR');
+                    const imageId = `img-${index}`;
+                    return `
+                        <tr>
+                            <td>
+                                ${vantagem.imagemUrl ? 
+                                    `<img id="${imageId}" src="${vantagem.imagemUrl}" 
+                                         alt="Foto da vantagem" 
+                                         class="vantagem-imagem"
+                                         onload="this.style.display='block'"
+                                         onerror="handleImageError(this)">` 
+                                    : '<div class="vantagem-imagem placeholder"></div>'
+                                }
+                            </td>
+                            <td>${vantagem.vantagemDescricao}</td>
+                            <td>${vantagem.empresaNome}</td>
+                            <td>${vantagem.valor} moedas</td>
+                            <td>${data}</td>
+                            <td><span class="cupom">${vantagem.cupomGerado}</span></td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao carregar dados. Por favor, tente novamente.');
+            }
+        });
+    </script>
+</body>
+</html> 

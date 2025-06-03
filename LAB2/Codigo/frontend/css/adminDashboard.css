@@ -112,6 +112,25 @@ select:focus {
     font-size: 0.9rem;
 }
 
+.logout-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #dc3545;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+    z-index: 1000;
+}
+
+.logout-btn:hover {
+    background-color: #c82333;
+}
+
 @media (min-width: 768px) {
     .form-row {
         display: flex;

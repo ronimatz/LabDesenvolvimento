@@ -5,12 +5,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.projeto2.moedaEstudantil.dto.EnvioMoedasDTO;
+import com.projeto2.moedaEstudantil.dto.request.EnvioMoedasDTO;
 import com.projeto2.moedaEstudantil.dto.response.ProfessorInfoDTO;
 import com.projeto2.moedaEstudantil.dto.response.TransacaoHistoricoDTO;
 import com.projeto2.moedaEstudantil.model.Aluno;
 import com.projeto2.moedaEstudantil.model.Professor;
 import com.projeto2.moedaEstudantil.model.Transacao;
+import com.projeto2.moedaEstudantil.model.TipoTransacao;
 import com.projeto2.moedaEstudantil.repositories.AlunoRepository;
 import com.projeto2.moedaEstudantil.repositories.ProfessorRepository;
 import com.projeto2.moedaEstudantil.repositories.TransacaoRepository;
@@ -74,15 +75,20 @@ public class ProfessorService {
             throw new RuntimeException("Saldo insuficiente");
         }
 
+        // Atualiza os saldos
         professor.setSaldoMoedas(professor.getSaldoMoedas() - envioMoedasDTO.getQuantidade());
         aluno.setSaldoMoedas(aluno.getSaldoMoedas() + envioMoedasDTO.getQuantidade());
 
-        Transacao transacao = new Transacao();
-        transacao.setProfessor(professor);
-        transacao.setAluno(aluno);
-        transacao.setQuantidade(envioMoedasDTO.getQuantidade());
-        transacao.setMotivo(envioMoedasDTO.getMotivo());
+        // Cria a transação
+        Transacao transacao = new Transacao(
+            professor,                           // origem
+            aluno,                              // destino
+            envioMoedasDTO.getQuantidade().doubleValue(), // valor
+            envioMoedasDTO.getMotivo(),         // motivo
+            TipoTransacao.ENVIO_MOEDAS          // tipo
+        );
 
+        // Salva as alterações
         professorRepository.save(professor);
         alunoRepository.save(aluno);
         transacaoRepository.save(transacao);
@@ -92,7 +98,10 @@ public class ProfessorService {
         Professor professor = professorRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
         
-        List<Transacao> transacoes = transacaoRepository.findByProfessorOrderByDataDesc(professor);
+        List<Transacao> transacoes = transacaoRepository.findByOrigemAndTipoOrderByDataDesc(
+            professor, 
+            TipoTransacao.ENVIO_MOEDAS
+        );
         
         return transacoes.stream()
                 .map(this::toTransacaoHistoricoDTO)
@@ -102,9 +111,13 @@ public class ProfessorService {
     private TransacaoHistoricoDTO toTransacaoHistoricoDTO(Transacao transacao) {
         TransacaoHistoricoDTO dto = new TransacaoHistoricoDTO();
         dto.setId(transacao.getId());
-        dto.setAlunoNome(transacao.getAluno().getNome());
-        dto.setAlunoEmail(transacao.getAluno().getEmail());
-        dto.setQuantidade(transacao.getQuantidade());
+        
+        // Como sabemos que é uma transação de ENVIO_MOEDAS, o destino é sempre um Aluno
+        Aluno aluno = (Aluno) transacao.getDestino();
+        dto.setAlunoNome(aluno.getNome());
+        dto.setAlunoEmail(aluno.getEmail());
+        
+        dto.setQuantidade(transacao.getValor().intValue());
         dto.setMotivo(transacao.getMotivo());
         dto.setData(transacao.getData());
         return dto;

@@ -12,6 +12,8 @@ public interface EmpresaParceiraRepository extends JpaRepository<EmpresaParceira
 
     Optional<EmpresaParceira> findByNome(String nome);
 
+    Optional<EmpresaParceira> findByEmail(String email);
+
     boolean existsByEmail(String email);
 
     boolean existsByCnpj(String cnpj);

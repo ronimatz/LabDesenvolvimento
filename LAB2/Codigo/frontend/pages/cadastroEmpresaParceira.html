@@ -13,12 +13,16 @@
             <button class="active">Empresa parceira</button>
         </div>
         <form id="empresaForm">
-            <input type="text" id="nome" placeholder="Nome da empresa" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="senha" placeholder="Senha" required>
-            <input type="text" id="cnpj" placeholder="CNPJ" required>
+            <input type="text" id="nome" placeholder="Nome da empresa">
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="senha" placeholder="Senha">
+            <input type="text" id="cnpj" placeholder="CNPJ">
             <button type="submit" class="cadastrar-btn">Cadastrar</button>
+            <div class="login-link">
+                <a href="login.html">Já tem uma conta? Faça login</a>
+            </div>
         </form>
+        <div id="mensagem" class="mensagem"></div>
     </div>
     <script src="../js/cadastroEmpresaParceira.js"></script>
 </body>

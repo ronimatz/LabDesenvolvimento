@@ -1,4 +1,4 @@
-package com.projeto2.moedaEstudantil.dto;
+package com.projeto2.moedaEstudantil.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

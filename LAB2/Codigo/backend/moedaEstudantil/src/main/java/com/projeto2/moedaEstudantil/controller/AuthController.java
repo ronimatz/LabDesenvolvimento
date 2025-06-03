@@ -1,8 +1,9 @@
 package com.projeto2.moedaEstudantil.controller;
 
-import com.projeto2.moedaEstudantil.dto.LoginDTO;
-import com.projeto2.moedaEstudantil.dto.LoginResponseDTO;
-import com.projeto2.moedaEstudantil.dto.CadastroAlunoDTO;
+import com.projeto2.moedaEstudantil.dto.request.AlunoDTO;
+
+import com.projeto2.moedaEstudantil.dto.request.LoginDTO;
+import com.projeto2.moedaEstudantil.dto.response.LoginResponseDTO;
 import com.projeto2.moedaEstudantil.exceptions.AuthenticationException;
 import com.projeto2.moedaEstudantil.services.AuthService;
 import jakarta.validation.Valid;
@@ -22,7 +23,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/cadastro/aluno")
-    public ResponseEntity<?> cadastrarAluno(@Valid @RequestBody CadastroAlunoDTO cadastroDTO, BindingResult result) {
+    public ResponseEntity<?> cadastrarAluno(@Valid @RequestBody AlunoDTO cadastroDTO, BindingResult result) {
         if (result.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             result.getFieldErrors().forEach(error -> 
