@@ -1,8 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
-    
+    const errorMessages = document.getElementById('errorMessages');
+
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        errorMessages.innerHTML = ''; // limpa erros anteriores
 
         const loginData = {
             email: document.getElementById('email').value,
@@ -18,16 +21,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: JSON.stringify(loginData)
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                throw new Error('Credenciais inválidas');
+                if (data.error) {
+                    // erro de autenticação
+                    errorMessages.innerHTML = `<p>${data.error}</p>`;
+                } else {
+                    // erro de validação
+                    for (const campo in data) {
+                        const msg = document.createElement('p');
+                        msg.textContent = data[campo];
+                        errorMessages.appendChild(msg);
+                    }
+                }
+                return;
             }
 
-            const data = await response.json();
+            // Login bem-sucedido
             localStorage.setItem('token', data.token);
             localStorage.setItem('userRole', data.role);
             localStorage.setItem('userName', data.nome);
 
-            // Redireciona baseado no papel do usuário
             switch (data.role) {
                 case 'ADMIN':
                     window.location.href = 'adminDashboard.html';
@@ -47,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Erro:', error);
-            alert(error.message || 'Erro ao fazer login');
+            errorMessages.innerHTML = `<p>${error.message || 'Erro ao fazer login'}</p>`;
         }
     });
-}); 
+});
