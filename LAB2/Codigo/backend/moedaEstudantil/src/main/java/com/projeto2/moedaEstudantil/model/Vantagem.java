@@ -10,7 +10,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,8 +25,12 @@ public class Vantagem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "A descrição é obrigatória")
     @Column(nullable = false)
     private String descricao;
+
+    @NotNull(message = "O valor é obrigatório")
+    @Min(value = 0, message = "O valor não pode ser negativo")
     @Column(nullable = false)
     private Double valor;
 
@@ -31,9 +38,13 @@ public class Vantagem {
     @Column(name = "foto_produto", columnDefinition = "BLOB")
     private byte[] fotoProduto;
 
+    @NotNull(message = "O desconto é obrigatório")
+    @Min(value = 0, message = "O desconto não pode ser negativo")
+    @Max(value = 100, message = "O desconto não pode ser maior que 100%")
     @Column(nullable = false)
     private Double desconto;
 
+    @NotNull(message = "A empresa parceira responsável é obrigatória")
     @ManyToOne
     @JoinColumn(name = "empresa_parceira_id") 
     @JsonIgnore
@@ -50,6 +61,4 @@ public class Vantagem {
         this.desconto = desconto;
         this.empresaParceiraResponsavel = empresaParceiraResponsavel;
     }
-
-
 }

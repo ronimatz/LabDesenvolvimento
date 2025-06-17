@@ -19,6 +19,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,12 +37,16 @@ public abstract class Usuario implements UserDetails {
     @SequenceGenerator(name = "usuario_seq", sequenceName = "usuario_sequence", allocationSize = 1)
     protected Integer id;
 
+    @NotBlank(message = "O email é obrigatório")
+    @Email(message = "Email inválido")
     @Column(unique = true, nullable = false)
     protected String email;
 
+    @NotBlank(message = "A senha é obrigatória")
     @Column(nullable = false)
     protected String senha;
 
+    @NotNull(message = "O papel do usuário é obrigatório")
     @Enumerated(EnumType.STRING)
     protected Role role;
 

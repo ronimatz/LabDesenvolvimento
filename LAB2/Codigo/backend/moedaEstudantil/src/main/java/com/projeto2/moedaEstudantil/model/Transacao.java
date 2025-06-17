@@ -10,6 +10,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,25 +25,32 @@ public class Transacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull(message = "O usuário de origem é obrigatório")
     @ManyToOne
     private Usuario origem;
 
+    @NotNull(message = "O usuário de destino é obrigatório")
     @ManyToOne
     private Usuario destino;
 
+    @NotNull(message = "A data é obrigatória")
     private LocalDateTime data;
     
+    @NotNull(message = "O valor é obrigatório")
+    @Min(value = 0, message = "O valor não pode ser negativo")
     private Double valor;
     
+    @NotBlank(message = "O motivo é obrigatório")
     private String motivo;
 
+    @NotNull(message = "O tipo de transação é obrigatório")
     @Enumerated(EnumType.STRING)
     private TipoTransacao tipo;
 
-    // Campo opcional para cupom (usado em transações de vantagens)
+    
     private String cupomGerado;
 
-    // Campo opcional para referência à vantagem (usado em transações de vantagens)
+    
     @ManyToOne
     private Vantagem vantagem;
 

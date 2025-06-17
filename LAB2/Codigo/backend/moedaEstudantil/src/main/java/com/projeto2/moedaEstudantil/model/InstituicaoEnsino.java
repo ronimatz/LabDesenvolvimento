@@ -3,8 +3,8 @@ package com.projeto2.moedaEstudantil.model;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.projeto2.moedaEstudantil.validation.CnpjValido;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,6 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,9 +30,12 @@ public class InstituicaoEnsino {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "O nome é obrigatório")
     @Column(nullable = false)
     private String nome;
 
+    @NotBlank(message = "O CNPJ é obrigatório")
+    @CnpjValido
     @Column(unique = true, nullable = false)
     private String cnpj;
 
@@ -56,5 +61,4 @@ public class InstituicaoEnsino {
         departamento.setInstituicaoEnsino(this);
         this.departamentos.add(departamento);
     }
-
 }

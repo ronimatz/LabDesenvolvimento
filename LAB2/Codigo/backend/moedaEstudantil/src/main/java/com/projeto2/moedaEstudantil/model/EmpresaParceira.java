@@ -3,7 +3,6 @@ package com.projeto2.moedaEstudantil.model;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import com.projeto2.moedaEstudantil.model.enums.Role;
 import com.projeto2.moedaEstudantil.validation.CnpjValido;
 
@@ -15,6 +14,7 @@ import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import jakarta.validation.constraints.NotBlank;
+
 
 @Entity
 @Table(name = "empresas_parceiras")
@@ -29,12 +29,6 @@ public class EmpresaParceira extends Usuario {
 
     @NotBlank(message = "Nome fantasia é obrigatório")
     private String nome;
-
-    private String descricao;
-
-    private String endereco;
-
-    private String telefone;
 
     @OneToMany(mappedBy = "empresaParceiraResponsavel", cascade = CascadeType.ALL)
     private List<Vantagem> vantagens = new ArrayList<>();

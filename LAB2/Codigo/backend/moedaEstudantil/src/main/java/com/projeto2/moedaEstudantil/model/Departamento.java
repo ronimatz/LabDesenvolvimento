@@ -16,6 +16,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,6 +35,7 @@ public class Departamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "O nome é obrigatório")
     @Column(nullable = false)
     private String nome;
 
@@ -42,6 +45,7 @@ public class Departamento {
     @OneToMany(mappedBy = "departamento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Curso> cursos = new ArrayList<>();
 
+    @NotNull(message = "A instituição de ensino é obrigatória")
     @ManyToOne
     @JoinColumn(name = "instituicao_id")
     @JsonBackReference

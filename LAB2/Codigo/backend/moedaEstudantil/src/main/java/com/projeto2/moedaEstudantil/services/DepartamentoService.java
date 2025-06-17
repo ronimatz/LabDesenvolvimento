@@ -36,25 +36,4 @@ public class DepartamentoService {
         return departamentoRepository.save(departamento);
     }
 
-    // Manter método antigo para compatibilidade
-    public Departamento save(Departamento departamento) {
-        departamento.setId(null);
-
-        Integer idInstituicao = departamento.getInstituicaoEnsino().getId();
-        InstituicaoEnsino instituicao = instituicaoEnsinoRepository.findById(idInstituicao)
-            .orElseThrow(() -> new IllegalArgumentException("Instituição de Ensino não cadastrada"));
-
-        
-        boolean nomeRepetido = instituicao.getDepartamentos().stream()
-            .anyMatch(dep -> dep.getNome().equalsIgnoreCase(departamento.getNome()));
-        if (nomeRepetido) {
-            throw new IllegalArgumentException("Departamento com o nome " + departamento.getNome() + " já existe na instituição.");
-        }
-
-        
-        departamento.setInstituicaoEnsino(instituicao);
-        instituicao.getDepartamentos().add(departamento); 
-
-        return departamentoRepository.save(departamento);
-    }
 }

@@ -18,31 +18,39 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.persistence.*;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 @Entity
 @Table(name = "alunos")
 @Getter
 @Setter
 @NoArgsConstructor
 public class Aluno extends Usuario {
+    @NotBlank(message = "O nome é obrigatório")
     @Column(nullable = false)
     private String nome;
     
+    @NotBlank(message = "O CPF é obrigatório")
     @Column(unique = true, nullable = false)
-   // @CPF(message = "CPF inválido")
     @CpfValido
     private String cpf;
     
+    @NotBlank(message = "O RG é obrigatório")
     @Column(unique = true, nullable = false)
     private String rg;
 
+    @NotNull(message = "O endereço é obrigatório")
     @Column(nullable = false)
     @Embedded
     private Endereco endereco;
 
+    @NotNull(message = "A instituição de ensino é obrigatória")
     @ManyToOne
     @JoinColumn(name = "instituicao_ensino_id", nullable = false) 
     private InstituicaoEnsino instituicaoEnsino;
 
+    @NotNull(message = "O curso é obrigatório")
     @ManyToOne
     @JoinColumn(name = "curso_id", nullable = false) 
     private Curso curso;
@@ -55,6 +63,7 @@ public class Aluno extends Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull(message = "O saldo de moedas é obrigatório")
     @Column(nullable = false)
     private Double saldoMoedas = 0.0; // Alunos começam com 0 moedas
 

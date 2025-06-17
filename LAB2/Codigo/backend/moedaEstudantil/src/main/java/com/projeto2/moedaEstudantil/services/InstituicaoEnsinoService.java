@@ -31,15 +31,6 @@ public class InstituicaoEnsinoService {
         return repository.save(instituicaoEnsino);
     }
 
-    public InstituicaoEnsino save(InstituicaoEnsino instituicaoEnsino) {
-        instituicaoEnsino.setId(null);
-        
-        if (repository.findByNome(instituicaoEnsino.getNome()).isPresent()) {
-            throw new RuntimeException("Instituicao Ensino ja cadastrada");
-        }
-
-        return repository.save(instituicaoEnsino);
-    }
 
     public void addProfessor(Integer instuicaoId, Professor professor) {
         InstituicaoEnsino instituicao = repository.findById(instuicaoId)
